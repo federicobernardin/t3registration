@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<users>
+    <correctUser>
+        <username>test</username>
+        <password>12345</password>
+        <passwordTwice>12345</passwordTwice>
+        <name>General name</name>
+        <first_name>Firstname</first_name>
+        <middle_name>MiddleName</middle_name>
+        <last_name>Lastname</last_name>
+        <address>Moon street, 23</address>
+        <telephone>7366454</telephone>
+        <fax>0847463</fax>
+        <email>test@test.it</email>
+        <title>1</title>
+        <zip>55555</zip>
+        <city>Rome</city>
+        <country>Italy</country>
+        <www>www.test.it</www>
+        <company>Test Srl</company>
+        <image></image>
+    </correctUser>
+    <wrongUser>
+        <username>test</username>
+        <password>12345</password>
+        <usergroup></usergroup>
+        <lockToDomain></lockToDomain>
+        <name></name>
+        <first_name>Firstname</first_name>
+        <middle_name>MiddleName</middle_name>
+        <last_name>Lastname</last_name>
+        <address>Moon street, 23</address>
+        <telephone>7366454</telephone>
+        <fax>0847463</fax>
+        <email>testtest.it</email>
+        <title>1</title>
+        <zip>55555</zip>
+        <city>Rome</city>
+        <country>Italy</country>
+        <www>www.test.it</www>
+        <company>Test Srl</company>
+        <image></image>
+    </wrongUser>
+</users>
