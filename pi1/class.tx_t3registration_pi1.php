@@ -1102,6 +1102,8 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 $this->piVars[$field['name']] = (is_array($fileFields[$field['name']])) ? implode(',', $fileFields[$field['name']]) : $fileFields[$field['name']];
                 return $noError;
                 break;
+            case 'date':
+            break;
             case 'hook':
                 if (isset($field['config']['evalHook'])) {
                     $params['field'] = $field;
@@ -1123,6 +1125,27 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 break;
         }
         return true;
+    }
+
+
+    protected function evaluateDate($date,$field){
+        if(isset($field['config.']['date.']['format'])){
+            $parsedArray = date_parse_from_format($field['config.']['date.']['format'], $date);
+            if($parsedArray['error_count'] == 0){
+                if($parsedArray['warning_count'] >0){
+                    return false;
+                }
+                else{
+                    return true;
+                }
+            }
+            else{
+                return false;
+            }
+        }
+        else{
+            return false;
+        }
     }
 
     /**
