@@ -202,6 +202,11 @@ class tx_t3registration_pi1 extends tslib_pibase {
      * @var array contains all error description
      */
     protected $fullErrorsList = array();
+    
+    /**
+     * @var array contains data of logged-in user
+     */
+    protected $feLoggedInUser = array();    
 
     /**
      * This constant contains the maximum code number of exception self managed by extension
@@ -370,6 +375,10 @@ class tx_t3registration_pi1 extends tslib_pibase {
         $this->languageObj = t3lib_div::makeInstance('language');
         //sets the correct language index
         $this->languageObj->init($this->LLkey);
+        // Initialize the feLoggedIn data array
+        if ($GLOBALS['TSFE']->loginUser) {
+        	$this->feLoggedInUser = $GLOBALS['TSFE']->fe_user->user;
+        }
     }
 
     /**
@@ -900,7 +909,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
      */
     protected function showProfile($user = array()) {
         if (!is_array($user) || count($user) == 0) {
-            $uid = $GLOBALS['TSFE']->fe_user->user['uid'];
+            $uid = $this->feLoggedInUser['uid'];
             $resource = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'fe_users', 'uid=' . $uid);
             $user = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resource);
         }
@@ -1144,7 +1153,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
             }
             //operation is an update, so you can insert a value equal own
             if (($GLOBALS['TSFE']->loginUser)) {
-                $where .= ' AND uid != ' . $GLOBALS['TSFE']->fe_user->user['uid'];
+                $where .= ' AND uid != ' . $this->feLoggedInUser['uid'];
             }
             $resource = $GLOBALS['TYPO3_DB']->exec_SELECTquery($field['field'], 'fe_users', $where);
             if ($GLOBALS['TYPO3_DB']->sql_num_rows($resource) > 0) {
@@ -1214,14 +1223,14 @@ class tx_t3registration_pi1 extends tslib_pibase {
     protected function emailDeletionSent($user = array()) {
         $content = $this->getTemplate();
         $content = $this->cObj->getSubpart($content, 'T3REGISTRATION_DELETE_SENTEMAIL');
-        if (isset($GLOBALS['TSFE']->fe_user->user['uid'])) {
+        if (isset($this->feLoggedInUser['uid'])) {
             if (!is_array($user) || count($user) == 0) {
-                $resource = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'fe_users', 'uid=' . $GLOBALS['TSFE']->fe_user->user['uid']);
+                $resource = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'fe_users', 'uid=' . $this->feLoggedInUser['uid']);
                 $user = array();
                 if ($GLOBALS['TYPO3_DB']->sql_num_rows($resource) > 0) {
                     $user = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resource);
                     $user['user_auth_code'] = md5('deleteAuth' . time() . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
-                    $GLOBALS['TYPO3_DB']->exec_UPDATEquery('fe_users', 'uid=' . $GLOBALS['TSFE']->fe_user->user['uid'], $user);
+                    $GLOBALS['TYPO3_DB']->exec_UPDATEquery('fe_users', 'uid=' . $this->feLoggedInUser['uid'], $user);
                 }
             }
             //$user could be empty if no user found
@@ -1948,6 +1957,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 $GLOBALS['TSFE']->fe_user->createUserSession($user);
                 $GLOBALS['TSFE']->fe_user->loginSessionStarted = TRUE;
                 $GLOBALS['TSFE']->fe_user->user = $GLOBALS["TSFE"]->fe_user->fetchUserSession();
+                $this->feLoggedInUser = $GLOBALS['TSFE']->fe_user->user;
             }
         }
     }
@@ -1959,9 +1969,11 @@ class tx_t3registration_pi1 extends tslib_pibase {
      * @return    string        the link HTML code
      */
     protected function showDeleteLink() {
-        $content = $this->getTemplate();
+        if ($this->conf['disableDeleteLink']==1)
+        	return '';
+    	$content = $this->getTemplate();
         $content = $this->cObj->getSubpart($content, '###T3REGISTRATION_DELETE###');
-        foreach ($GLOBALS['TSFE']->fe_user->user as $key => $value) {
+        foreach ($this->feLoggedInUser as $key => $value) {
             $valueArray['###' . strtoupper($key) . '###'] = $value;
         }
         $deleteArray = array(
@@ -2294,12 +2306,12 @@ class tx_t3registration_pi1 extends tslib_pibase {
                         $user = $params['user'];
                     }
                 }
-                $GLOBALS['TYPO3_DB']->exec_UPDATEquery('fe_users', 'uid=' . $GLOBALS['TSFE']->fe_user->user['uid'], $user);
+                $GLOBALS['TYPO3_DB']->exec_UPDATEquery('fe_users', 'uid=' . $this->feLoggedInUser['uid'], $user);
                 if ($this->debugLevel && TYPO3_DLOG) {
                     t3lib_div::devLog('user ' . $user['email'] . ' updates his profile', $this->extKey, t3lib_div::SYSLOG_SEVERITY_INFO, $user);
                     t3lib_div::sysLog('user ' . $user['username'] . ' updates his profile', $this->extKey, t3lib_div::SYSLOG_SEVERITY_INFO);
                     if ($this->debugLevel > 1) {
-                        t3lib_div::devLog('user ' . $user['email'] . ' updates his profile QUERY: <b>' . $GLOBALS['TYPO3_DB']->UPDATEquery('fe_users', 'uid=' . $GLOBALS['TSFE']->fe_user->user['uid'], $user) . '</b>', $this->extKey, t3lib_div::SYSLOG_SEVERITY_INFO, $user);
+                        t3lib_div::devLog('user ' . $user['email'] . ' updates his profile QUERY: <b>' . $GLOBALS['TYPO3_DB']->UPDATEquery('fe_users', 'uid=' . $this->feLoggedInUser['uid'], $user) . '</b>', $this->extKey, t3lib_div::SYSLOG_SEVERITY_INFO, $user);
                     }
                 }
             }
@@ -2378,7 +2390,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
             $content = $this->getTemplate();
             $content = $this->cObj->getSubpart($content, '###T3REGISTRATION_CONFIRMEDONREDIRECT###');
             foreach ($this->fieldsData as $field) {
-                $markerArray['###' . strtoupper($field['name']) . '###'] = $GLOBALS['TSFE']->fe_user->user[$field['field']];
+                $markerArray['###' . strtoupper($field['name']) . '###'] = $this->feLoggedInUser[$field['field']];
             }
             $markerArray['###DESCRIPTION_TEXT###'] = $this->cObj->substituteMarkerArrayCached($this->pi_getLL('ConfirmedOnRedirectText'), $markerArray);
             $markerArray['###SIGNATURE###'] = $this->pi_getLL('signature');
@@ -2526,23 +2538,27 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 break;
             case 'editOK':
                 $previousLoginUser = $GLOBALS['TSFE']->loginUser;
-                $previousLoggedUser = ($GLOBALS['TSFE']->loginUser) ? $GLOBALS['TSFE']->fe_user->user : array();
+                $previousLoggedUser = ($GLOBALS['TSFE']->loginUser) ? $this->feLoggedInUser : array();
                 $GLOBALS['TSFE']->loginUser = 1;
                 $GLOBALS['TSFE']->fe_user->user = $this->testGetUser();
+                $this->feLoggedInUser = $GLOBALS['TSFE']->fe_user->user;
                 $this->piVars = $GLOBALS['TSFE']->fe_user->user;
                 $content = $warning . $this->endRegistration();
                 $GLOBALS['TSFE']->loginUser = $previousLoginUser;
                 $GLOBALS['TSFE']->fe_user->user = $previousLoggedUser;
+                $this->feLoggedInUser = $GLOBALS['TSFE']->fe_user->user;
                 return $content;
             case 'delete':
                 $previousLoginUser = $GLOBALS['TSFE']->loginUser;
                 $previousLoggedUser = ($GLOBALS['TSFE']->loginUser) ? $GLOBALS['TSFE']->fe_user->user : array();
                 $GLOBALS['TSFE']->loginUser = 1;
                 $GLOBALS['TSFE']->fe_user->user = $this->testGetUser();
+                $this->feLoggedInUser = $GLOBALS['TSFE']->fe_user->user;
                 $this->piVars = $GLOBALS['TSFE']->fe_user->user;
                 $content = $warning . $this->showDeleteLink();
                 $GLOBALS['TSFE']->loginUser = $previousLoginUser;
                 $GLOBALS['TSFE']->fe_user->user = $previousLoggedUser;
+                $this->feLoggedInUser = $GLOBALS['TSFE']->fe_user->user;
                 return $content;
                 break;
             case 'deleteSentEmail':
@@ -2567,10 +2583,12 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 $previousLoggedUser = ($GLOBALS['TSFE']->loginUser) ? $GLOBALS['TSFE']->fe_user->user : array();
                 $GLOBALS['TSFE']->loginUser = 1;
                 $GLOBALS['TSFE']->fe_user->user = $this->testGetUser();
+                $this->feLoggedInUser = $GLOBALS['TSFE']->fe_user->user;
                 $user = $GLOBALS['TSFE']->fe_user->user;
                 $content = $warning . $this->showProfile($user);
                 $GLOBALS['TSFE']->loginUser = $previousLoginUser;
                 $GLOBALS['TSFE']->fe_user->user = $previousLoggedUser;
+                $this->feLoggedInUser = $GLOBALS['TSFE']->fe_user->user;
                 return $content;
                 break;
             case 'editWithErrors':
@@ -2579,11 +2597,13 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 $previousLoggedUser = ($GLOBALS['TSFE']->loginUser) ? $GLOBALS['TSFE']->fe_user->user : array();
                 $GLOBALS['TSFE']->loginUser = 1;
                 $GLOBALS['TSFE']->fe_user->user = $this->testGetUser(true);
+                $this->feLoggedInUser = $GLOBALS['TSFE']->fe_user->user;
                 $this->piVars = $this->testGetUser(false);
                 $this->piVars['submitted'] = 1;
                 $content = $warning . $this->getForm();
                 $GLOBALS['TSFE']->loginUser = $previousLoginUser;
                 $GLOBALS['TSFE']->fe_user->user = $previousLoggedUser;
+                $this->feLoggedInUser = $GLOBALS['TSFE']->fe_user->user;
                 return $content;
                 break;
         }
