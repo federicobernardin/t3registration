@@ -1909,8 +1909,8 @@ class tx_t3registration_pi1 extends tslib_pibase {
      * @return    void
      */
     protected function updateConfirmedUser($user) {
-        $groupsBeforeConfirmation = explode(',', $this->conf['preUsergroup']);
-        $groupsAfterConfirmation = explode(',', $this->conf['postUsergroup']);
+        $groupsBeforeConfirmation = (strpos($this->conf['preUsergroup'],','))?explode(',', $this->conf['preUsergroup']):array();
+        $groupsAfterConfirmation = (strpos($this->conf['postUsergroup'],','))?explode(',', $this->conf['postUsergroup']):array();
         $usergroup = explode(',', $user['usergroup']);
         $newUserGroup = array();
         foreach ($usergroup as $group) {
