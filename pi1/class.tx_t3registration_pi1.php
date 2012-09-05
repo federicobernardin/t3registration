@@ -394,7 +394,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
     }
 
     protected function getDateFromTimestamp($timestamp,$fieldname){
-        $timezone = ($field['config']['date']['timezone'])?:'UTC';
+        $timezone = ($this->fieldsData[$fieldname]['config']['date']['timezone'])?:'UTC';
         date_default_timezone_set($timezone);
         if(isset($this->fieldsData[$fieldname]['config']['date']['strftime']) && $this->fieldsData[$fieldname]['config']['date']['strftime']){
             return date($this->fieldsData[$fieldname]['config']['date']['strftime'],$timestamp);
