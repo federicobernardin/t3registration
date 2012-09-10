@@ -747,7 +747,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 foreach ($items as $item) {
                     $counter++;
                     $text = (isset($item[0])) ? (preg_match('/LLL:EXT:/', $item[0]) ? $this->languageObj->sl($item[0]) : $item[0]) : '';
-                    $reference = ($field['usingCounterAsId'] || $this->conf['form.']['usingCounterAsIdAll']) ? $counter : str_replace(' ', '_', (((isset($item[1]) || strlen($item[1] >0)) ? $item[1] : 'empty'));
+                    $reference = ($field['usingCounterAsId'] || $this->conf['form.']['usingCounterAsIdAll']) ? $counter : str_replace(' ', '_', (((isset($item[1]) || strlen($item[1] >0))) ? $item[1] : 'empty'));
                     $id = ($field['config']['id']) ? ' id="' . $field['config']['id'] . '_' . $reference . '" ' : (($this->conf['form.']['standardFieldId']) ? ' id="' . $this->conf['form.']['standardFieldId.']['pre'] . $field['name'] . '_' . $reference . '" ' : '');
                     $value = (isset($item[1])) ? $item[1] : '';
                     $selected = ($this->piVars[$field['name']] == $value) ? 'checked' : '';
