@@ -1246,9 +1246,12 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 return false;
             }
         }
-        if(isset($field['config']['date']['dateIsNotPast'])){
+        if(isset($field['config']['date']['dateHasToBeIn'])){
             if(($now = $this->getTimestampFromDate(date($field['config']['date']['strftime']),$field)) !== false){
-                if($timestamp<$now){
+                if($field['config']['date']['dateHasToBeIn'] == 'future' && $timestamp<$now){
+                    return false;
+                }
+                elseif($field['config']['date']['dateHasToBeIn'] == 'past' && $timestamp>$now){
                     return false;
                 }
             }
