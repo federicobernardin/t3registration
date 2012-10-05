@@ -510,11 +510,9 @@ class tx_t3registration_pi1 extends tslib_pibase {
         $content = $this->getTemplate();
         $preview = false;
         $error = false;
-        $submitted = false;
         if ($this->piVars['submitted'] == 1 || ($this->piVars['sendConfirmation'] == 1 && isset($this->piVars['confirmPreview']))) {
             $error = $this->checkErrors();
             $preview = ($error) ? false : true;
-            $submitted = true;
         }
 
         /*This hook could be called to fill the pivars during first loading of form (check preview and error)*/
@@ -523,11 +521,6 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 $params = array('fields' => $this->fieldsData, 'content' => $content, 'data' => $this->piVars, 'preview' => $preview, 'error' => $error);
                 $this->piVars = t3lib_div::callUserFunction($fieldFunction, $params, $this);
             }
-        }
-
-        //elaborate data from profile
-        if($submitted == false && $GLOBALS['TSFE']->loginUser){
-
         }
 
         if ($GLOBALS['TSFE']->loginUser) {
