@@ -134,13 +134,13 @@ class tx_t3registration_pi1 extends tslib_pibase {
      * contains fields will be override from ts
      * @var array
      */
-    private $flexformOverrideTs = array('testXMLFile', 'useAnotherTemplateInChangeProfileMode', 'contactEmailMode', 'approvalProcess', 'userFolder', 'templateFile', 'autoLoginAfterConfirmation', 'emailFrom', 'emailFromName', 'emailAdmin', 'stepToTest', 'enableTemplateTest', 'confirmationPage', 'preUsergroup', 'postUsergroup', 'passwordGeneration');
+    protected $flexformOverrideTs = array('testXMLFile', 'useAnotherTemplateInChangeProfileMode', 'contactEmailMode', 'approvalProcess', 'userFolder', 'templateFile', 'autoLoginAfterConfirmation', 'emailFrom', 'emailFromName', 'emailAdmin', 'stepToTest', 'enableTemplateTest', 'confirmationPage', 'preUsergroup', 'postUsergroup', 'passwordGeneration');
 
     /**
      * Contains fields with its configuration to rendering form fields
      * @var array
      */
-    private $fieldsData = array();
+    protected $fieldsData = array();
 
     /**
      * If true double-optin is enabled
@@ -176,12 +176,12 @@ class tx_t3registration_pi1 extends tslib_pibase {
      * It can be 1,2 or 3 is binary value and bit 1 is HTML format and bit 2 is TEXT format for mail
      * @var int
      */
-    private $emailFormat = 0;
+    protected $emailFormat = 0;
 
     /**
      * @var array contains data relative to url parameters
      */
-    private $externalAction;
+    protected $externalAction;
 
     /**
      * @var array contains errors data
