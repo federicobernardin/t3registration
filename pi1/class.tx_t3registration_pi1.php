@@ -397,6 +397,82 @@ class tx_t3registration_pi1 extends tslib_pibase {
         }
     }
 
+    protected function preElaborateData($user){
+
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3registration']['profileFetchData'])) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3registration']['profileFetchData'] as $fieldFunction) {
+                $params = array('fields' => $this->fieldsData, 'user' => $user, 'data' => $this->piVars);
+                $this->piVars = t3lib_div::callUserFunction($fieldFunction, $params, $this);
+            }
+        }
+        foreach ($this->fieldsData as $field) {
+            if(!isset($this->conf['fieldConfiguration.'][$field['name'] . '.']['preElaborateDateDisable']) || !$this->conf['fieldConfiguration.'][$field['name'] . '.']['preElaborateDateDisable']){
+                $evaluationRulesList = $this->getEvaluationRulesList($field['name']);
+                if(in_array('date',$evaluationRulesList) && $user[$field['field']] && (!version_compare(phpversion(), '5.3', '<'))){
+                    if(($date = $this->getDateFromTimestamp($user[$field['field']],$field['name'])) !== false){
+                        $this->piVars[$field['field']] = $date;
+                    }
+
+                }
+            }
+        }
+    }
+
+    protected function getDateFromTimestamp($timestamp,$fieldname){
+        $timezone = ($this->fieldsData[$fieldname]['config']['date']['timezone'])?:'UTC';
+        date_default_timezone_set($timezone);
+        if(isset($this->fieldsData[$fieldname]['config']['date']['strftime']) && $this->fieldsData[$fieldname]['config']['date']['strftime']){
+            return date($this->fieldsData[$fieldname]['config']['date']['strftime'],$timestamp);
+        }
+        else{
+            return false;
+        }
+    }
+
+    protected function getTimestampFromDate($date,$field){
+        $timezone = ($field['config']['date']['timezone'])?:'UTC';
+        date_default_timezone_set($timezone);
+        if(isset($field['config']['date']['strftime'])){
+            $parsedArray = date_parse_from_format($field['config']['date']['strftime'], $date);
+            if($parsedArray['error_count'] == 0){
+                if($parsedArray['warning_count'] >0){
+                    return false;
+                }
+                else{
+                    $timestamp = mktime(0,0,0,$parsedArray['month'],$parsedArray['day'],$parsedArray['year']);
+                    return $timestamp;
+                }
+            }
+            else{
+                return false;
+            }
+        }
+        else{
+            return false;
+        }
+    }
+
+    protected function postElaborateData(){
+
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3registration']['postElaborateData'])) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3registration']['postElaborateData'] as $fieldFunction) {
+                $params = array('fields' => $this->fieldsData, 'data' => $this->piVars);
+                $this->piVars = t3lib_div::callUserFunction($fieldFunction, $params, $this);
+            }
+        }
+        foreach ($this->fieldsData as $field) {
+            if(!isset($this->conf['fieldConfiguration.'][$field['name'] . '.']['preElaborateDateDisable']) || !$this->conf['fieldConfiguration.'][$field['name'] . '.']['preElaborateDateDisable']){
+                $evaluationRulesList = $this->getEvaluationRulesList($field['name']);
+                if(in_array('date',$evaluationRulesList) && $this->piVars[$field['field']]){
+                    if(($date = $this->getTimestampFromDate($this->piVars[$field['field']],$field)) !== false){
+                        $this->piVars[$field['field']] = $date;
+                    }
+
+                }
+            }
+        }
+    }
+
     /**
      * This function fetches flex data from flex form plugin and merge data into $this conf array.
      *
@@ -939,12 +1015,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 $this->piVars[$field['name']] = t3lib_div::callUserFunction($field['config']['fetchDataHook'], $params, $this);
             }
         }
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3registration']['profileFetchData'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3registration']['profileFetchData'] as $fieldFunction) {
-                $params = array('fields' => $this->fieldsData, 'user' => $user, 'data' => $this->piVars);
-                $this->piVars = t3lib_div::callUserFunction($fieldFunction, $params, $this);
-            }
-        }
+        $this->preElaborateData($user);
         return $this->getForm();
     }
 
@@ -1127,6 +1198,9 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 $this->piVars[$field['name']] = (is_array($fileFields[$field['name']])) ? implode(',', $fileFields[$field['name']]) : $fileFields[$field['name']];
                 return $noError;
                 break;
+            case 'date':
+                return $this->evaluateDate($this->piVars[$field['name']],$field);
+            break;
             case 'hook':
                 if (isset($field['config']['evalHook'])) {
                     $params['field'] = $field;
@@ -1148,6 +1222,51 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 break;
         }
         return true;
+    }
+
+    protected function checkDateRange($timestamp,$field){
+
+        if(isset($field['config']['date']['maxDate'])){
+            if(($maxDate = $this->getTimestampFromDate($field['config']['date']['maxDate'],$field)) !== false){
+                if($timestamp>$maxDate){
+                    return false;
+                }
+            }
+            else{
+                return false;
+            }
+        }
+        if(isset($field['config']['date']['minDate'])){
+            if(($minDate = $this->getTimestampFromDate($field['config']['date']['minDate'],$field)) !== false){
+                if($timestamp<$minDate){
+                    return false;
+                }
+            }
+            else{
+                return false;
+            }
+        }
+        if(isset($field['config']['date']['dateIsNotPast'])){
+            if(($now = $this->getTimestampFromDate(date($field['config']['date']['strftime']),$field)) !== false){
+                if($timestamp<$now){
+                    return false;
+                }
+            }
+            else{
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    protected function evaluateDate($date,$field){
+        if(($timestamp = $this->getTimestampFromDate($date,$field)) !== false){
+            return $this->checkDateRange($timestamp,$field);
+        }
+        else{
+            return false;
+        }
     }
 
     /**
@@ -1812,8 +1931,8 @@ class tx_t3registration_pi1 extends tslib_pibase {
      * @return    void
      */
     protected function updateConfirmedUser($user) {
-        $groupsBeforeConfirmation = explode(',', $this->conf['preUsergroup']);
-        $groupsAfterConfirmation = explode(',', $this->conf['postUsergroup']);
+        $groupsBeforeConfirmation = (strpos($this->conf['preUsergroup'],','))?explode(',', $this->conf['preUsergroup']):array();
+        $groupsAfterConfirmation = (strpos($this->conf['postUsergroup'],','))?explode(',', $this->conf['postUsergroup']):array();
         $usergroup = explode(',', $user['usergroup']);
         $newUserGroup = array();
         foreach ($usergroup as $group) {
@@ -2306,6 +2425,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
      */
     protected function updateUserProfile() {
         if ($this->userLogged) {
+            $this->postElaborateData();
             foreach ($this->fieldsData as $field) {
                 if ($field['type'] == 'databaseField' && $field['hideInChangeProfile'] == 0) {
                     $user[$field['field']] = $this->htmlentities($this->piVars[$field['name']]);
