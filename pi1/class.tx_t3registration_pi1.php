@@ -2431,7 +2431,11 @@ class tx_t3registration_pi1 extends tslib_pibase {
             $this->postElaborateData();
             foreach ($this->fieldsData as $field) {
                 if ($field['type'] == 'databaseField' && $field['hideInChangeProfile'] == 0) {
-                    $user[$field['field']] = $this->htmlentities($this->piVars[$field['name']]);
+                    if (!isset($field['noHTMLEntities']) || (isset($field['noHTMLEntities']) && $field['noHTMLEntities'] == 1)) {
+                        $user[$field['field']] = (is_array($this->piVars[$field['name']])) ? implode(',', $this->piVars[$field['name']]) : $this->htmlentities($this->piVars[$field['name']]);
+                    } else {
+                        $user[$field['field']] = (is_array($this->piVars[$field['name']])) ? implode(',', $this->piVars[$field['name']]) : $this->piVars[$field['name']];
+                    }
                 }
             }
             //Inserire hook per aggiornare i campi
