@@ -2290,6 +2290,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
      * @return    void
      */
     protected function insertUser() {
+        $this->postElaborateData();
         if ($this->conf['passwordGeneration'] || !isset($this->piVars['password']) || strlen($this->piVars['password']) == 0) {
             $this->piVars['password'] = substr(md5(time() . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, 8);
         }
