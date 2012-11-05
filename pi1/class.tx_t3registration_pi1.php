@@ -2400,12 +2400,12 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 $requestInput = sprintf('<input type="text" %s name="%s" />', $id, $this->prefixId . '[' . $this->conf['usernameField'] . ']');
                 $markerArray['###REQUEST###'] = $this->cObj->stdWrap($requestInput, $this->conf['sendConfirmationObject.']['stdWrap.']);
                 $formId = ($this->conf['form.']['id']) ? $this->conf['form.']['id'] : 't3Registration-' . substr(md5(time() . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, 8);
-                $action = $this->pi_getPageLink($GLOBALS['TSFE']->id);
                 $submitButton = sprintf('<input type="submit" %s name="' . $this->prefixId . '[submit]" value="%s" />', $this->cObj->stdWrap($this->conf['form.']['submitButton.']['params'], $this->conf['form.']['submitButton.']['params.']), $this->pi_getLL('sendConfirmationCode'));
                 $submitButton = $this->cObj->stdWrap($submitButton, $this->conf['form.']['submitButton.']['stdWrap.']);
                 $markerArray['###DESCRIPTION_TEXT###'] = $this->cObj->stdWrap($this->pi_getLL('sendConfirmationCodeText'), $this->conf['sendConfirmationObject.']['text.']['stdWrap.']);
                 $markerArray['###LABEL###'] = ($this->pi_getLL($this->conf['usernameField'] . 'Label')) ? $this->pi_getLL($this->conf['usernameField'] . 'Label') : ((isset($this->fieldsData[$this->conf['usernameField']]['label'])) ? $this->languageObj->sL($this->fieldsData[$this->conf['usernameField']]['label'], true) : '');
                 $hiddenArray[] = '<input type="hidden" name="' . $this->prefixId . '[posted]" value="1" />';
+                $hiddenArray[] = '<input type="hidden" name="' . $this->prefixId . '[action]" value="sendConfirmationCode" />';
                 if ($this->conf['form.']['markerButtons']) {
                     $markerArray['###FORM_BUTTONS###'] = sprintf('%s' . chr(10) . $submitButton, implode(chr(10), $hiddenArray));
                     $endForm = '';
