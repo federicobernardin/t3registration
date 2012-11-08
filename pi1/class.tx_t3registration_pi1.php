@@ -249,8 +249,10 @@ class tx_t3registration_pi1 extends tslib_pibase {
             $this->pi_loadLL();
             //initialize language object used in label translation from TCA
             $this->init();
+            print($this->conf['templateFile']);
             //extract data from flexform
             $this->initFlexform();
+            print($this->conf['templateFile']);
             //extract TCA columns from fe_users table
             $this->loadTCAField();
             //adds evaluation additional data
@@ -264,6 +266,8 @@ class tx_t3registration_pi1 extends tslib_pibase {
             $this->argumentsFromUrlCheck();
             //debug($this->fieldsData);
             $this->setEmailFormat();
+            print($this->conf['templateFile']);
+            exit;
 
             if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3registration']['beforeActionInit'])) {
                 foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3registration']['beforeActionInit'] as $fieldFunction) {
@@ -388,11 +392,8 @@ class tx_t3registration_pi1 extends tslib_pibase {
         /*This hook could be called to update user data*/
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3registration']['userLogged'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3registration']['userLogged'] as $fieldFunction) {
-                $params = array('user' => $this->feLoggedInUser, 'piVars' => $this->piVars, 'userLogged' => $this->userLogged);
+                $params = array('user' => &$this->feLoggedInUser, 'piVars' => &$this->piVars, 'userLogged' => &$this->userLogged);
                 t3lib_div::callUserFunction($fieldFunction, $params, $this);
-                $this->feLoggedInUser = $params['user'];
-                $this->userLogged = $params['userLogged'];
-                $this->piVars = $params['piVars'];
             }
         }
     }
@@ -521,6 +522,13 @@ class tx_t3registration_pi1 extends tslib_pibase {
             $lConf['fields'] = implode(',', $fieldsList);
             //merge lconf (flexform array data) with this->conf (typoscript data and flexformoverridets key)
             $this->conf = t3lib_div::array_merge_recursive_overrule($lConf, $this->conf);
+        }
+        //hook for initialization
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3registration']['init'])) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3registration']['init'] as $fieldFunction) {
+                $params = array('fields' => &$this->fieldsData, 'data' => &$this->piVars,'conf' => &$this->conf);
+                t3lib_div::callUserFunction($fieldFunction, $params, $this);
+            }
         }
     }
 
@@ -2010,7 +2018,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
     }
 
     /**
-     * This function authorizes user by upadating the user record into fe_users database table.
+     * This function authorizes user by updating the user record into fe_users database table.
      *
      * @param    array $user        the user to be authorized
      * @return    void
