@@ -242,32 +242,9 @@ class tx_t3registration_pi1 extends tslib_pibase {
             }
             $this->conf = $conf;
 
-            //set errorLevel
-            $this->debugLevel = (isset($this->conf['debugLevel'])) ? $this->conf['debugLevel'] : $this->debugLevel;
-            //debug($this->conf);
-            $this->pi_setPiVarDefaults();
-            $this->pi_loadLL();
             //initialize language object used in label translation from TCA
             $this->init();
-            print($this->conf['templateFile']);
-            //extract data from flexform
-            $this->initFlexform();
-            print($this->conf['templateFile']);
-            //extract TCA columns from fe_users table
-            $this->loadTCAField();
-            //adds evaluation additional data
-            $this->addFunctionReplace($this->conf['fieldConfiguration.'], $this->conf['fieldConfiguration.'], '');
-            //merges data from flexform with ones from ts (after removing dots)
-            $fieldsFromTS = $this->removeDotFromArray($this->conf['fieldConfiguration.']);
-            $this->fieldsData = t3lib_div::array_merge_recursive_overrule($this->fieldsData, $this->removeUnusedFields($fieldsFromTS));
-            //update TCA config fields with fieldsData
-            $this->mergeTCAFieldWithConfiguration();
-            //Test action from url
-            $this->argumentsFromUrlCheck();
-            //debug($this->fieldsData);
-            $this->setEmailFormat();
-            print($this->conf['templateFile']);
-            exit;
+
 
             if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3registration']['beforeActionInit'])) {
                 foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3registration']['beforeActionInit'] as $fieldFunction) {
@@ -380,13 +357,22 @@ class tx_t3registration_pi1 extends tslib_pibase {
      * @return    void
      */
     protected function init() {
+
+        //set errorLevel
+        $this->debugLevel = (isset($this->conf['debugLevel'])) ? $this->conf['debugLevel'] : $this->debugLevel;
+        //debug($this->conf);
+        $this->pi_setPiVarDefaults();
+        $this->pi_loadLL();
+
+
+
         //initialize the language class to extract translation for label outside the actual plugin (example cms fe_users label)
         $this->languageObj = t3lib_div::makeInstance('language');
         //sets the correct language index
         $this->languageObj->init($this->LLkey);
         // Initialize the feLoggedIn data array
         if ($GLOBALS['TSFE']->loginUser) {
-        	$this->feLoggedInUser = $GLOBALS['TSFE']->fe_user->user;
+            $this->feLoggedInUser = $GLOBALS['TSFE']->fe_user->user;
             $this->userLogged = true;
         }
         /*This hook could be called to update user data*/
@@ -396,6 +382,22 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 t3lib_div::callUserFunction($fieldFunction, $params, $this);
             }
         }
+
+        //extract data from flexform
+        $this->initFlexform();
+        //extract TCA columns from fe_users table
+        $this->loadTCAField();
+        //adds evaluation additional data
+        $this->addFunctionReplace($this->conf['fieldConfiguration.'], $this->conf['fieldConfiguration.'], '');
+        //merges data from flexform with ones from ts (after removing dots)
+        $fieldsFromTS = $this->removeDotFromArray($this->conf['fieldConfiguration.']);
+        $this->fieldsData = t3lib_div::array_merge_recursive_overrule($this->fieldsData, $this->removeUnusedFields($fieldsFromTS));
+        //update TCA config fields with fieldsData
+        $this->mergeTCAFieldWithConfiguration();
+        //Test action from url
+        $this->argumentsFromUrlCheck();
+        //debug($this->fieldsData);
+        $this->setEmailFormat();
     }
 
     protected function preElaborateData($user){
