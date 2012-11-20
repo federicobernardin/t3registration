@@ -422,7 +422,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
     }
 
     protected function getDateFromTimestamp($timestamp,$fieldname){
-        $timezone = ($this->fieldsData[$fieldname]['config']['date']['timezone'])?:'UTC';
+        $timezone = (isset($field['config']['date']['timezone']) && $field['config']['date']['timezone'])?$field['config']['date']['timezone']:'UTC';
         date_default_timezone_set($timezone);
         if(isset($this->fieldsData[$fieldname]['config']['date']['strftime']) && $this->fieldsData[$fieldname]['config']['date']['strftime']){
             return date($this->fieldsData[$fieldname]['config']['date']['strftime'],$timestamp);
@@ -433,7 +433,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
     }
 
     protected function getTimestampFromDate($date,$field){
-        $timezone = ($field['config']['date']['timezone'])?:'UTC';
+        $timezone = (isset($field['config']['date']['timezone']) && $field['config']['date']['timezone'])?$field['config']['date']['timezone']:'UTC';
         date_default_timezone_set($timezone);
         if(isset($field['config']['date']['strftime'])){
             $parsedArray = date_parse_from_format($field['config']['date']['strftime'], $date);
@@ -1209,7 +1209,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 return $noError;
                 break;
             case 'date':
-                return $this->evaluateDate($this->piVars[$field['name']],$field);
+                return $this->evaluateDate($value,$field);
             break;
             case 'hook':
                 if (isset($field['config']['evalHook'])) {
@@ -1235,7 +1235,6 @@ class tx_t3registration_pi1 extends tslib_pibase {
     }
 
     protected function checkDateRange($timestamp,$field){
-
         if(isset($field['config']['date']['maxDate'])){
             if(($maxDate = $this->getTimestampFromDate($field['config']['date']['maxDate'],$field)) !== false){
                 if($timestamp>$maxDate){
