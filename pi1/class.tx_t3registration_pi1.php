@@ -1322,11 +1322,11 @@ class tx_t3registration_pi1 extends tslib_pibase {
      */
     protected function checkLength($value, $field) {
         $error = true;
-        if (t3lib_div::testInt($field['config']['maxchars']) && $field['config']['maxchars'] > 0) {
+        if (is_numeric($field['config']['maxchars']) && $field['config']['maxchars'] > 0) {
             if (strlen($value) > $field['config']['maxchars'])
                 $error = false;
         }
-        if (t3lib_div::testInt($field['config']['minchars']) && $field['config']['minchars'] > 0) {
+        if (is_numeric($field['config']['minchars']) && $field['config']['minchars'] > 0) {
             if (strlen($value) < $field['config']['minchars'])
                 $error = false;
         }
