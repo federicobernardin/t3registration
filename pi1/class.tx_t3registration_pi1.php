@@ -1155,11 +1155,11 @@ class tx_t3registration_pi1 extends tslib_pibase {
     protected function evaluateField($value, $evaluationRule, $field = array()) {
         switch ($evaluationRule) {
             case 'int':
-                return t3lib_div::testInt($value);
+                return is_numeric($value);
                 break;
             case 'alpha':
             case 'string':
-                return preg_match('/^[a-zA-Z]+$/', $value);
+                return is_string($value);
                 break;
             case 'email':
                 return t3lib_div::validEmail($value);
