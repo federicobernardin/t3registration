@@ -237,10 +237,10 @@ class tx_t3registration_pi1 extends tslib_pibase {
      */
     public function main($content, $conf) {
         try {
-            if ($this->conf['javascriptsInclusion.']['jquery']) {
+            $this->conf = $conf;
+            if (isset($this->conf['javascriptsInclusion.']) && $this->conf['javascriptsInclusion.']['jquery']) {
                 $GLOBALS['TSFE']->additionalHeaderData['t3registrationJQuery'] = '<script type="text/javascript" src="' . t3lib_extMgm::siteRelPath('t3registration') . 'res/javascript/initialize.js"></script>';
             }
-            $this->conf = $conf;
 
             //initialize language object used in label translation from TCA
             $this->init();
@@ -363,8 +363,6 @@ class tx_t3registration_pi1 extends tslib_pibase {
         //debug($this->conf);
         $this->pi_setPiVarDefaults();
         $this->pi_loadLL();
-
-
 
         //initialize the language class to extract translation for label outside the actual plugin (example cms fe_users label)
         $this->languageObj = t3lib_div::makeInstance('language');
@@ -2273,7 +2271,9 @@ class tx_t3registration_pi1 extends tslib_pibase {
      * @return    string        the whole HTML template
      */
     protected function getTemplate() {
-        $content = $this->cObj->fileResource($this->cObj->stdWrap($this->conf['templateFile'], $this->conf['templateFile.']));
+        //$content = $this->cObj->fileResource($this->cObj->stdWrap($this->conf['templateFile'], $this->conf['templateFile.']));
+        $fileName = $GLOBALS['TSFE']->tmpl->getFileName($this->cObj->stdWrap($this->conf['templateFile'], $this->conf['templateFile.']));
+        $content = @file_get_contents(PATH_site . $fileName);
         if ($content) {
             return $content;
         }
