@@ -1157,7 +1157,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 break;
             case 'alpha':
             case 'string':
-                return is_string($value);
+                return preg_match('/\D/', $value);
                 break;
             case 'email':
                 return t3lib_div::validEmail($value);
@@ -2450,6 +2450,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
      */
     protected function updateUserProfile() {
         if ($this->userLogged) {
+            $usernameField = $this->conf['usernameField'];
             $this->postElaborateData();
             foreach ($this->fieldsData as $field) {
                 if ($field['type'] == 'databaseField' && $field['hideInChangeProfile'] == 0) {
@@ -2459,6 +2460,10 @@ class tx_t3registration_pi1 extends tslib_pibase {
                         $user[$field['field']] = (is_array($this->piVars[$field['name']])) ? implode(',', $this->piVars[$field['name']]) : $this->htmlentities($this->piVars[$field['name']]);
                     }
                 }
+            }
+            // field "username" gets updated with data of custom "username"-field
+            if(isset($this->conf['usernameUpdateWhenChangeUsernameField']) && ($this->conf['usernameUpdateWhenChangeUsernameField'] == 1) && isset($usernameField) && strlen($usernameField) && isset($this->piVars[$usernameField])){
+                $user['username'] = $user[$usernameField];
             }
             //Inserire hook per aggiornare i campi
             $user['tstamp'] = time();
