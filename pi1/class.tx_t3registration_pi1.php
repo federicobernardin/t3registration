@@ -2317,7 +2317,6 @@ class tx_t3registration_pi1 extends tslib_pibase {
         }
         //call function to verify the type of verification
         $user = $this->setAuthCode();
-        $user['usergroup'] = ($this->userAuth || $this->adminAuth) ? $this->conf['preUsergroup'] : $this->conf['postUsergroup'];
         foreach ($this->fieldsData as $field) {
             if ($field['type'] == 'databaseField') {
                 if (!isset($field['dbHTMLEntities']) || (isset($field['dbHTMLEntities']) && $field['dbHTMLEntities'] == 0)) {
@@ -2326,6 +2325,24 @@ class tx_t3registration_pi1 extends tslib_pibase {
                     $user[$field['field']] = (is_array($this->piVars[$field['name']])) ? implode(',', $this->piVars[$field['name']]) : $this->htmlentities($this->piVars[$field['name']]);
                 }
             }
+        }
+        if(isset($user['usergroup']) && $user['usergroup'] != ''){
+            if($this->userAuth || $this->adminAuth){
+                $flexformUserGroup = (isset($this->conf['preUsergroup']))?explode(',',$this->conf['preUsergroup']):array();
+            }
+            else{
+                $flexformUserGroup = (isset($this->conf['postUsergroup']))?explode(',',$this->conf['postUsergroup']):array();
+            }
+            $usergroup = explode(',', $user['usergroup']);
+            foreach ($flexformUserGroup as $group) {
+                if (!in_array($group, $usergroup)) {
+                    $usergroup[] = $group;
+                }
+            }
+            $user['usergroup'] = implode(',',$usergroup);
+        }
+        else{
+            $user['usergroup'] = ($this->userAuth || $this->adminAuth) ? $this->conf['preUsergroup'] : $this->conf['postUsergroup'];
         }
         $user['username'] = $this->getUsername();
 
