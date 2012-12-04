@@ -1084,16 +1084,6 @@ class tx_t3registration_pi1 extends tslib_pibase {
         $field = $this->fieldsData[$name];
         $evaluation = array();
         $field['config']['eval'] = $field['config']['eval'] ? $field['config']['eval'] : '';
-        //todo redundant: regexp outsideof config is the regular expression to match, evaluation must be in eval
-        /*if (isset($field['regexp']) && strlen($field['regexp']) > 0) {
-            if (strlen($field['config']['eval']) > 0) {
-                $evalArray = explode(',', $field['config']['eval']);
-            } else {
-                $evalArray = array();
-            }
-            $evalArray[] = 'regexp';
-            $field['config']['eval'] = implode(',', $evalArray);
-        }*/
         if (isset($field['config']['internal_type']) && $field['config']['internal_type'] === 'file') {
             if (strlen($field['config']['eval']) > 0) {
                 $evalArray = explode(',', $field['config']['eval']);
@@ -2036,8 +2026,6 @@ class tx_t3registration_pi1 extends tslib_pibase {
         $user['admin_auth_code'] = '';
         $user['admin_disable'] = 0;
         $user['usergroup'] = implode(',', $this->updateUserGroup($user));
-        //@todo to remove
-        $user['uid'] = $user['uid'];
         if (strlen($user['user_auth_code']) == 0) {
             $user['disable'] = 0;
         }
