@@ -1,3 +1,85 @@
+2012-12-04 Federico Bernardin <federico@bernardin.it>
+    * update some todos
+
+2012-11-30 Federico Bernardin <federico@bernardin.it>
+    * fixed bug #43310 usergroup passed by pivars mustn't be overrided by pre or post usergroups
+    * insert todo for regular expression
+
+2012-11-27 Federico Bernardin <federico@bernardin.it>
+    * changed method to fetch template content, now it's callable from test
+
+2012-11-21 Federico Bernardin <federico@bernardin.it>
+    * changed is_numeric in chekclength password
+    * update validation method (is_string and is_numeric)
+
+2012-11-20 Federico Bernardin <federico@bernardin.it>
+    * fixed bug on timezone code
+
+2012-11-09 Federico Bernardin <federico@bernardin.it>
+    * moved base configuration into init
+
+2012-11-08 Federico Bernardin <federico@bernardin.it>
+    * updated manual inserted new init hook
+
+2012-11-05 Federico Bernardin <federico@bernardin.it>
+    * added hidden field for action in send confirmation code again.
+
+2012-10-31 Federico Bernardin <federico@bernardin.it>
+    * change noHTMLEntities with dbHTMLEntities
+
+2012-10-16 Federico Bernardin <federico@bernardin.it>
+    * fixed problem when saving data in new registration
+
+2012-10-15 Federico Bernardin <federico@bernardin.it>
+    * fixed language vars and added italian translation
+    * beautify code
+
+2012-10-12 Federico Bernardin <federico@bernardin.it>
+    * fixed #41881 closed
+
+2012-10-07 Federico Bernardin <federico@bernardin.it>
+    * fixed bug #41638
+
+2012-10-05 Federico Bernardin <federico@bernardin.it>
+    * fixed error in label of manual (confirmationAfterAuthorizationTextHmtl)
+    * implement getter method for user logged data
+    * update manual for version 1.3.0
+    * resolved bug #40745
+    * implement dateHasToBe as required by Bakonyi
+    * Merge branch 'mauro_requests' and 'date request'
+    * Merge branch 'date_features' into mauro_requests
+    * removed submitted possible feature
+    * substituted $GLOBALS['TSFE']->loginUser with $this->userLogged.
+    * update private variables to protected (allowing override on extending)
+
+2012-09-18 Federico Bernardin <federico@bernardin.it>
+    * FIXED: bug #40745 $this->$this
+
+2012-09-10 Federico Bernardin <federico@bernardin.it>
+    * FIXED: when radio button item[1] is 0 write empty
+    * FIXED: when radio button item[1] is 0 write empty
+
+2012-09-05 Federico Bernardin <federico@bernardin.it>
+    * FIXED: error retrieving time zone
+
+2012-09-04 Federico Bernardin <federico@bernardin.it>
+    * FIXED:added timezone feature
+
+2012-09-03 Federico Bernardin <federico@bernardin.it>
+    * ADDED: resolve bug about usergroup update
+
+2012-08-31 Federico Bernardin <federico@bernardin.it>
+    * FIXED: update regular expression to fetch markers from template
+    * FIXED: update date evaluation
+
+2012-08-26 Federico Bernardin <federico@bernardin.it>
+    * FIXED: resolved problem on comma in usergroup
+    * test for date
+
+2012-08-25 Federico Bernardin <federico@bernardin.it>
+    * added evaluationDate function (TBD)
+    * Changing form TSFE fe_user to new object feLoggedInUser
+
 2012-04-03 Federico Bernardin  <federico@bernardin.it>
     * fixed bug when user chgange profile but field was hidden
     * added text config type for textarea in autofield
