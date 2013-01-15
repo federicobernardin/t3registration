@@ -267,6 +267,10 @@
                                              <numIndex index="0">LLL:EXT:t3registration/locallang_db.xml:field.validator.required</numIndex>
                                              <numIndex index="1">required</numIndex>
                                             </numIndex>
+                                      <numIndex index="7" type="array">
+                                          <numIndex index="0">LLL:EXT:t3registration/locallang_db.xml:field.validator.regexp</numIndex>
+                                          <numIndex index="1">regexp</numIndex>
+                                      </numIndex>
                                          </items>
                                                 <size>3</size>
                                                 <autoSizeMax>5</autoSizeMax>

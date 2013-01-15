@@ -57,6 +57,7 @@
             <label index="field.validator.required">Required</label>
             <label index="field.validator.file">File</label>
             <label index="field.validator.none">None</label>
+            <label index="field.validator.regexp">Regular expression</label>
 
             <label index="sheet.email">Email</label>
             <label index="emailFrom">Sender address</label>
