@@ -1647,6 +1647,13 @@ class tx_t3registration_pi1 extends tslib_pibase {
             $emailFrom = ($this->conf['emailFrom']) ? $this->conf['emailFrom'] : '';
             $emailFromName = ($this->conf['emailFromName']) ? $this->conf['emailFromName'] : '';
             if ($this->conf['emailFrom'] && ($message['type'] != 'admin' || ($this->conf['emailAdmin'] && $message['type'] == 'admin'))) {
+				if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3registration']['beforeSendingEmail'])) {
+					foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3registration']['beforeSendingEmail'] as $userFunction) {
+						$params['user'] = $user;
+						$params['mailObject'] = $mailObject;
+						t3lib_div::callUserFunction($userFunction, $params, $this);
+					}
+				}
                 $mailObject->setFrom(array($emailFrom => $emailFromName))->send();
             } else {
                 if ($this->debugLevel > 0) {
@@ -1751,6 +1758,13 @@ class tx_t3registration_pi1 extends tslib_pibase {
      * @return    void
      */
     protected function prepareAndSendEmailSubpart($action, $user) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3registration']['prepareAndSendEmail'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3registration']['prepareAndSendEmail'] as $userFunction) {
+				$params['user'] = $user;
+				$params['action'] = $action;
+				t3lib_div::callUserFunction($userFunction, $params, $this);
+			}
+		}
         switch ($action) {
             case 'deleteRequest':
                 $this->sendEmail($this->deleteEmail($user), $user, 'mailToUserDeleteSubject');
