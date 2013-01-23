@@ -1,3 +1,11 @@
+2013-01-23 Federico Bernardin <federico@bernardin.it>
+    * Added two new hooks: prepareAndSendEmail, beforeSendingEmail
+    * Added regexp rule to flexform rules list
+
+2013-01-15 Federico Bernardin <federico@bernardin.it>
+    * Fixed bug with regexp
+    * Added regexp rule to flexform rules list
+
 2012-12-04 Federico Bernardin <federico@bernardin.it>
     * update some todos
 
