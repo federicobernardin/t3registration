@@ -1,3 +1,6 @@
+2013-01-29 Federico Bernardin <federico@bernardin.it>
+    * Fixed bug into send confirmation email again
+
 2013-01-23 Federico Bernardin <federico@bernardin.it>
     * Added two new hooks: prepareAndSendEmail, beforeSendingEmail
     * Added regexp rule to flexform rules list
