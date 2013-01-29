@@ -2445,7 +2445,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 $markerArray['###DESCRIPTION_TEXT###'] = $this->cObj->stdWrap($this->pi_getLL('sendConfirmationCodeText'), $this->conf['sendConfirmationObject.']['text.']['stdWrap.']);
                 $markerArray['###LABEL###'] = ($this->pi_getLL($this->conf['usernameField'] . 'Label')) ? $this->pi_getLL($this->conf['usernameField'] . 'Label') : ((isset($this->fieldsData[$this->conf['usernameField']]['label'])) ? $this->languageObj->sL($this->fieldsData[$this->conf['usernameField']]['label'], true) : '');
                 $hiddenArray[] = '<input type="hidden" name="' . $this->prefixId . '[posted]" value="1" />';
-                $hiddenArray[] = '<input type="hidden" name="' . $this->prefixId . '[action]" value="sendConfirmationCode" />';
+                $hiddenArray[] = '<input type="hidden" name="' . $this->prefixId . '[action]" value="resendConfirmationCode" />';
                 if ($this->conf['form.']['markerButtons']) {
                     $markerArray['###FORM_BUTTONS###'] = sprintf('%s' . chr(10) . $submitButton, implode(chr(10), $hiddenArray));
                     $endForm = '';
