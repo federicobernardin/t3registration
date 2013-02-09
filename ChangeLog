@@ -1,3 +1,6 @@
+2013-02-09 Federico Bernardin <federico@bernardin.it>
+    * Fixed bug when only 1 usergroup is in preusergroup and postusergroup
+
 2013-01-29 Federico Bernardin <federico@bernardin.it>
     * Fixed bug into send confirmation email again
 
