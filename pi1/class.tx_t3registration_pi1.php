@@ -1932,6 +1932,22 @@ class tx_t3registration_pi1 extends tslib_pibase {
         return $this->cObj->substituteMarkerArrayCached($content, $markerArray);
     }
 
+	/**
+	 * This function remove emty value in usergroup array.
+	 *
+	 * @param $usergroup
+	 *
+	 * @return mixed
+	 */
+	protected function clearUserGroup($usergroup){
+		foreach($usergroup as $key => $item){
+			if(!is_numeric($item)){
+				unset($usergroup[$key]);
+			}
+		}
+		return $usergroup;
+	}
+
     /**
      * This function return the correct group list based on approval process
      * @param $user user data
@@ -1939,8 +1955,10 @@ class tx_t3registration_pi1 extends tslib_pibase {
      */
     protected function updateUserGroup($user) {
         if (strlen($user['admin_auth_code']) == 0 && strlen($user['user_auth_code']) == 0) {
-            $groupsBeforeConfirmation = (strpos($this->conf['preUsergroup'], ',')) ? explode(',', $this->conf['preUsergroup']) : array();
-            $groupsAfterConfirmation = (strpos($this->conf['postUsergroup'], ',')) ? explode(',', $this->conf['postUsergroup']) : array();
+            $groupsBeforeConfirmation = (strlen($this->conf['preUsergroup'])) ? explode(',', $this->conf['preUsergroup']) : array();
+            $groupsAfterConfirmation = (strlen($this->conf['postUsergroup'])) ? explode(',', $this->conf['postUsergroup']) : array();
+			$groupsAfterConfirmation = $this->clearUserGroup($groupsAfterConfirmation);
+			$groupsBeforeConfirmation = $this->clearUserGroup($groupsBeforeConfirmation);
             $usergroup = explode(',', $user['usergroup']);
             $newUserGroup = array();
             foreach ($usergroup as $group) {
@@ -2336,6 +2354,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 $flexformUserGroup = (isset($this->conf['postUsergroup']))?explode(',',$this->conf['postUsergroup']):array();
             }
             $usergroup = explode(',', $user['usergroup']);
+			$flexformUserGroup = $this->clearUserGroup($flexformUserGroup);
             foreach ($flexformUserGroup as $group) {
                 if (!in_array($group, $usergroup)) {
                     $usergroup[] = $group;
@@ -2345,6 +2364,10 @@ class tx_t3registration_pi1 extends tslib_pibase {
         }
         else{
             $user['usergroup'] = ($this->userAuth || $this->adminAuth) ? $this->conf['preUsergroup'] : $this->conf['postUsergroup'];
+			//clear usergroup from error type
+			$userGroupArray = explode(',',$user['usergroup']);
+			$userGroupArray = $this->clearUserGroup($userGroupArray);
+			$user['usergroup'] = implode(',',$userGroupArray);
         }
         $user['username'] = $this->getUsername();
 
