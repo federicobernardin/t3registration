@@ -730,13 +730,13 @@ class tx_t3registration_pi1 extends tslib_pibase {
             $contentArray['###' . strtoupper($field['name']) . '_LABEL###'] = '';
             $contentArray['###' . strtoupper($field['name']) . '_VALUE###'] = '';
         } else {
-            $contentArray['###' . strtoupper($field['name']) . '_LABEL###'] = (($field['hideInChangeProfile'] == 1 && $this->userLogged) || (strlen($this->piVars[$field['name']]) == 0) && (isset($this->conf['form.']['hideInPreviewIfEmpty']) && $this->conf['form.']['hideInPreviewIfEmpty'] == 1)) ? '' : (($this->pi_getLL($field['name'] . 'Label')) ? $this->cObj->stdWrap($this->pi_getLL($field['name'] . 'Label'), $this->conf['form.']['standardPreviewLabelWrap.']) : ((isset($field['label'])) ? $this->cObj->stdWrap($this->languageObj->sL($field['label'], true), $this->conf['form.']['standardPreviewLabelWrap.']) : ''));
+            $contentArray['###' . strtoupper($field['name']) . '_LABEL###'] = (($field['hideInChangeProfile'] == 1 && $this->userLogged) || (isset($this->piVars[$field['name']]) && strlen($this->piVars[$field['name']]) == 0) && (isset($this->conf['form.']['hideInPreviewIfEmpty']) && $this->conf['form.']['hideInPreviewIfEmpty'] == 1)) ? '' : (($this->pi_getLL($field['name'] . 'Label')) ? $this->cObj->stdWrap($this->pi_getLL($field['name'] . 'Label'), $this->conf['form.']['standardPreviewLabelWrap.']) : ((isset($field['label'])) ? $this->cObj->stdWrap($this->languageObj->sL($field['label'], true), $this->conf['form.']['standardPreviewLabelWrap.']) : ''));
             switch ($field['config']['type']) {
                 case 'input':
                 case 'text':
                     $this->piVars[$field['name']] = (is_array($this->piVars[$field['name']])) ? implode(',', $this->piVars[$field['name']]) : $this->piVars[$field['name']];
                     //call $this->htmlentities to remove xss scripting side
-                    $contentArray['###' . strtoupper($field['name']) . '_VALUE###'] = (($field['hideInChangeProfile'] == 1 && $this->userLogged) || strlen($this->piVars[$field['name']]) == 0) ? '' : (($field['noHTMLEntities']) ? $this->cObj->stdWrap($this->piVars[$field['name']], $this->conf['form.']['standardPreviewFieldWrap.']) : $this->cObj->stdWrap($this->htmlentities($this->piVars[$field['name']]), $this->conf['form.']['standardPreviewFieldWrap.']));
+                    $contentArray['###' . strtoupper($field['name']) . '_VALUE###'] = (($field['hideInChangeProfile'] == 1 && $this->userLogged) || (isset($this->piVars[$field['name']]) && strlen($this->piVars[$field['name']]) == 0)) ? '' : (($field['noHTMLEntities']) ? $this->cObj->stdWrap($this->piVars[$field['name']], $this->conf['form.']['standardPreviewFieldWrap.']) : $this->cObj->stdWrap($this->htmlentities($this->piVars[$field['name']]), $this->conf['form.']['standardPreviewFieldWrap.']));
                     break;
                 case 'group':
                     if (isset($field['config']['internal_type']) && $field['config']['internal_type'] === 'file') {
@@ -747,18 +747,19 @@ class tx_t3registration_pi1 extends tslib_pibase {
                             $fieldArray['file'] = $field['config']['uploadfolder'] . '/' . $image;
                             $imageList[] = $this->cObj->IMAGE($fieldArray);
                         }
-                        $contentArray['###' . strtoupper($field['name']) . '_VALUE###'] = (($field['hideInChangeProfile'] == 1 && $this->userLogged) || strlen($this->piVars[$field['name']]) == 0) ? '' : implode('', $imageList);
+                        $contentArray['###' . strtoupper($field['name']) . '_VALUE###'] = (($field['hideInChangeProfile'] == 1 && $this->userLogged) || (isset($this->piVars[$field['name']]) && strlen($this->piVars[$field['name']]) == 0)) ? '' : implode('', $imageList);
                     }
                     break;
                 case 'select':
                 case 'radio':
                     $tca = new tx_t3registration_tcaexternalfunctions();
-                    $items = $tca->getForeignTableData($field);
+					$items = $tca->getForeignTableData($field, $field['config']['items']);
+					$items = $tca->getItemsProcFunc($field, $items);
                     foreach ($items as $item) {
                         $text = (isset($item[0])) ? (preg_match('/LLL:EXT:/', $item[0]) ? $this->languageObj->sl($item[0]) : $item[0]) : '';
                         $value = (isset($item[1])) ? $item[1] : '';
                         if ($this->piVars[$field['name']] == $value) {
-                            $contentArray['###' . strtoupper($field['name']) . '_VALUE###'] = (($field['hideInChangeProfile'] == 1 && $this->userLogged) || strlen($this->piVars[$field['name']]) == 0) ? '' : $this->cObj->stdWrap($text, $this->conf['form.']['standardPreviewFieldWrap.']);
+                            $contentArray['###' . strtoupper($field['name']) . '_VALUE###'] = (($field['hideInChangeProfile'] == 1 && $this->userLogged) || (isset($this->piVars[$field['name']]) && strlen($this->piVars[$field['name']]) == 0)) ? '' : $this->cObj->stdWrap($text, $this->conf['form.']['standardPreviewFieldWrap.']);
                         }
                     }
                     break;
@@ -769,7 +770,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
                                 $values[] = (isset($field['config']['items'][$counter][0])) ? (preg_match('/LLL:EXT:/', $field['config']['items'][$counter][0]) ? $this->languageObj->sl($field['config']['items'][$counter][0]) : $field['config']['items'][$counter][0]) : '';
                             }
                         }
-                        $contentArray['###' . strtoupper($field['name']) . '_VALUE###'] = (($field['hideInChangeProfile'] == 1 && $this->userLogged) || count($this->piVars[$field['name']]) == 0) ? '' : $this->cObj->stdWrap(implode(',', $values), $this->conf['form.']['standardPreviewFieldWrap.']);
+                        $contentArray['###' . strtoupper($field['name']) . '_VALUE###'] = (($field['hideInChangeProfile'] == 1 && $this->userLogged) || (isset($this->piVars[$field['name']]) && count($this->piVars[$field['name']]) == 0)) ? '' : $this->cObj->stdWrap(implode(',', $values), $this->conf['form.']['standardPreviewFieldWrap.']);
                     } else {
                         if (isset($this->piVars[$field['name']]) && $this->piVars[$field['name']] == '1') {
                             //todo to explain in the manual
