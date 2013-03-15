@@ -1,3 +1,6 @@
+2013-03-15 Federico Bernardin <federico@bernardin.it>
+    * Fixed bug using TCA field in preview step
+
 2013-02-09 Federico Bernardin <federico@bernardin.it>
     * Fixed bug when only 1 usergroup is in preusergroup and postusergroup
 
