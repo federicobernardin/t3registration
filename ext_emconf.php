@@ -3,7 +3,7 @@
 ########################################################################
 # Extension Manager/Repository config file for ext "t3registration".
 #
-# Auto generated 15-03-2013 18:08
+# Auto generated 18-03-2013 12:41
 #
 # Manual updates:
 # Only the data in the array - everything else is removed by next
@@ -29,7 +29,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'clearCacheOnLoad' => 1,
 	'lockType' => '',
 	'author_company' => 'BFConsulting',
-	'version' => '1.5.3',
+	'version' => '1.5.4',
 	'constraints' => array(
 		'depends' => array(
 			'cms' => '',

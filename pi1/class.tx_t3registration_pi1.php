@@ -1960,7 +1960,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
             $groupsAfterConfirmation = (strlen($this->conf['postUsergroup'])) ? explode(',', $this->conf['postUsergroup']) : array();
 			$groupsAfterConfirmation = $this->clearUserGroup($groupsAfterConfirmation);
 			$groupsBeforeConfirmation = $this->clearUserGroup($groupsBeforeConfirmation);
-            $usergroup = explode(',', $user['usergroup']);
+            $usergroup = (strlen($user['usergroup'])) ? explode(',', $user['usergroup']) : array();
             $newUserGroup = array();
             foreach ($usergroup as $group) {
                 if (!in_array($group, $groupsBeforeConfirmation)) {
