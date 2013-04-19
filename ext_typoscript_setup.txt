@@ -130,4 +130,7 @@ plugin.tx_t3registration_pi1{
 
     #if you set to 1 salted password will not be used (not recommended)
     extra.disabledSaltedPassword = 0
+
+    #enable redirect from t3registration only links with parameters
+    extra.saveParamsFromUrlWithoutParams = 0
 }
