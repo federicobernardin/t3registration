@@ -147,6 +147,7 @@ class tx_t3registration_hooks {
      */
     public function addHiddenForParams(&$params, $pObj) {
         //Enable function
+		$found=false;
         if ($pObj->conf['extra.']['saveParamsFromUrl'] && $GLOBALS['TSFE']->loginUser == 0) {
             if (isset($pObj->piVars['paramsFromUrl'])) {
                 $params['hiddenArray']['paramsFromUrl'] = '<input type="hidden" name="tx_t3registration_pi1[paramsFromUrl]" value="' . $pObj->piVars['paramsFromUrl'] . '" />';
@@ -158,11 +159,12 @@ class tx_t3registration_hooks {
                     foreach ($paramsList as $item) {
                         $tempSingleParam = explode('=', $item);
                         if (t3lib_div::inList($paramsWhitelist, $tempSingleParam[0])) {
+							$found = true;
                             $paramToSave[] = htmlentities(strip_tags($item));
                         }
                     }
                 }
-                if (count($paramToSave) > 0) {
+                if (count($paramToSave) > 0 && $found) {
                     $params['hiddenArray']['paramsFromUrl'] = '<input type="hidden" name="tx_t3registration_pi1[paramsFromUrl]" value="' . implode(',', $paramToSave) . '" />';
                 }
             }
@@ -178,7 +180,7 @@ class tx_t3registration_hooks {
      * @return    [type]        ...
      */
     public function saveParams(&$params, $pObj) {
-        if ($pObj->conf['extra.']['saveParamsFromUrl'] && $GLOBALS['TSFE']->loginUser == 0) {
+        if ($pObj->conf['extra.']['saveParamsFromUrl'] && $GLOBALS['TSFE']->loginUser == 0 && (isset($params['piVars']['paramsFromUrl']) || $pObj->conf['extra.']['saveParamsFromUrlWithoutParams'])) {
             $values = array(
                 'md5hash' => substr(md5($params['user']['uid'] . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, 20),
                 'tstamp'  => time(),
