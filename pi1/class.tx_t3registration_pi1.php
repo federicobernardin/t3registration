@@ -682,7 +682,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
 
         }
         $content = $this->cObj->substituteMarkerArrayCached($content, $markerArray, $contentArray);
-        $this->formId = ($this->conf['form.']['id']) ? $this->conf['form.']['id'] : 't3Registration-' . substr(md5(time() . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, 8);
+        $this->formId = ($this->conf['form.']['id']) ? $this->conf['form.']['id'] : 't3Registration-' . substr(md5(uniqid('',TRUE) . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, 8);
         $action = $this->pi_getPageLink($GLOBALS['TSFE']->id);
         $content = sprintf('<form id="%s" action="%s" method="post" enctype="%s">' . chr(10) . '%s' . chr(10) . '%s' . chr(10) . '</form>', $this->formId, $action, $GLOBALS['TYPO3_CONF_VARS']['SYS']['form_enctype'], $content, $endForm);
         return $content;
@@ -1360,7 +1360,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 $user = array();
                 if ($GLOBALS['TYPO3_DB']->sql_num_rows($resource) > 0) {
                     $user = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($resource);
-                    $user['user_auth_code'] = md5('deleteAuth' . time() . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
+                    $user['user_auth_code'] = md5('deleteAuth' . uniqid('',TRUE) . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
                     $GLOBALS['TYPO3_DB']->exec_UPDATEquery('fe_users', 'uid=' . $this->feLoggedInUser['uid'], $user);
                 }
             }
@@ -2334,7 +2334,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
     protected function insertUser() {
         $this->postElaborateData();
         if ($this->conf['passwordGeneration'] || !isset($this->piVars['password']) || strlen($this->piVars['password']) == 0) {
-            $this->piVars['password'] = substr(md5(time() . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, 8);
+            $this->piVars['password'] = substr(md5(uniqid('',TRUE) . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, 8);
         }
         //call function to verify the type of verification
         $user = $this->setAuthCode();
@@ -2463,7 +2463,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 $id = ($this->conf['sendConfirmationObject.']['params']) ? $this->conf['sendConfirmationObject.']['params'] : '';
                 $requestInput = sprintf('<input type="text" %s name="%s" />', $id, $this->prefixId . '[' . $this->conf['usernameField'] . ']');
                 $markerArray['###REQUEST###'] = $this->cObj->stdWrap($requestInput, $this->conf['sendConfirmationObject.']['stdWrap.']);
-                $formId = ($this->conf['form.']['id']) ? $this->conf['form.']['id'] : 't3Registration-' . substr(md5(time() . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, 8);
+                $formId = ($this->conf['form.']['id']) ? $this->conf['form.']['id'] : 't3Registration-' . substr(md5(uniqid('',TRUE) . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, 8);
                 $submitButton = sprintf('<input type="submit" %s name="' . $this->prefixId . '[submit]" value="%s" />', $this->cObj->stdWrap($this->conf['form.']['submitButton.']['params'], $this->conf['form.']['submitButton.']['params.']), $this->pi_getLL('sendConfirmationCode'));
                 $submitButton = $this->cObj->stdWrap($submitButton, $this->conf['form.']['submitButton.']['stdWrap.']);
                 $markerArray['###DESCRIPTION_TEXT###'] = $this->cObj->stdWrap($this->pi_getLL('sendConfirmationCodeText'), $this->conf['sendConfirmationObject.']['text.']['stdWrap.']);
@@ -2546,7 +2546,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
         if (isset($this->piVars[$this->conf['usernameField']])) {
             return $this->piVars[$this->conf['usernameField']];
         } else {
-            return 'user-' . md5(time() . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
+            return 'user-' . md5(uniqid('',TRUE) . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
         }
     }
 
@@ -2562,11 +2562,11 @@ class tx_t3registration_pi1 extends tslib_pibase {
         foreach ($authProcessList as $process) {
             switch ($process) {
                 case 'doubleOptin':
-                    $user['user_auth_code'] = md5('doubleOptin' . time() . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
+                    $user['user_auth_code'] = md5('doubleOptin' . uniqid('',TRUE) . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
                     $this->userAuth = true;
                     break;
                 case 'adminApproval':
-                    $user['admin_auth_code'] = md5('adminApproval' . time() . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
+                    $user['admin_auth_code'] = md5('adminApproval' . uniqid('',TRUE) . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
                     $this->adminAuth = true;
                     $user['admin_disable'] = 1;
                     break;
@@ -2780,7 +2780,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 break;
             case 'deleteConfirmationEmail':
                 $user = $this->testGetUser();
-                $user['user_auth_code'] = md5('deleteAuth' . time() . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
+                $user['user_auth_code'] = md5('deleteAuth' . uniqid('',TRUE) . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
                 $this->prepareAndSendEmailSubpart('deleteRequest', $user);
                 ;
                 return tx_t3registration_checkstatus::getMessage($this->pi_getll('testMailTitle'), sprintf($this->pi_getll('testConfirmationUserDeleteSent'), $user['email']), 'info');
