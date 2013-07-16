@@ -1,3 +1,20 @@
+2013-07-16 Federico Bernardin <federico@bernardin.it>
+    * Fixed bug when user change his profile (bug on forge #48682)
+
+2013-07-16 Federico Bernardin <federico@bernardin.it>
+    * Updated function library for 6.1 compatibility (versionNumber)
+
+2013-07-16 Federico Bernardin <federico@bernardin.it>
+    * Fixed bug on auto password generation (#55061 in forge)
+
+2013-06-15 Federico Bernardin <federico@bernardin.it>
+    * Changed time in uniqid because it could not be unique.
+
+2013-04-19 Federico Bernardin <federico@bernardin.it>
+    * Added new feature to redirect user after confirmation only if parameters exists. Added description on the doc
+    * update redirect: if at least one redirect params is passed or is set extra.saveParamsFromUrlWithoutParams the system redirect
+    * update manual
+
 2013-03-15 Federico Bernardin <federico@bernardin.it>
     * Fixed bug when pre usergroup is empty (update confirmed user not work)
 
