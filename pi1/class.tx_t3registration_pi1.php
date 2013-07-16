@@ -128,7 +128,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
     var $prefixId = 'tx_t3registration_pi1'; // Same as class name
     var $scriptRelPath = 'pi1/class.tx_t3registration_pi1.php'; // Path to this script relative to the extension dir.
     var $extKey = 't3registration'; // The extension key.
-    var $pi_checkCHash = true;
+    var $pi_USER_INT_obj = true;
 
     /**
      * contains fields will be override from ts
@@ -2333,9 +2333,6 @@ class tx_t3registration_pi1 extends tslib_pibase {
      */
     protected function insertUser() {
         $this->postElaborateData();
-        if ($this->conf['passwordGeneration'] || !isset($this->piVars['password']) || strlen($this->piVars['password']) == 0) {
-            $this->piVars['password'] = substr(md5(uniqid('',TRUE) . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, 8);
-        }
         //call function to verify the type of verification
         $user = $this->setAuthCode();
         foreach ($this->fieldsData as $field) {
@@ -2347,6 +2344,9 @@ class tx_t3registration_pi1 extends tslib_pibase {
                 }
             }
         }
+		if ($this->conf['passwordGeneration'] || !isset($this->piVars['password']) || strlen($this->piVars['password']) == 0) {
+			$user['password'] = substr(md5(uniqid('',TRUE) . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']), 0, 8);
+		}
         if(isset($user['usergroup']) && $user['usergroup'] != ''){
             if($this->userAuth || $this->adminAuth){
                 $flexformUserGroup = (isset($this->conf['preUsergroup']))?explode(',',$this->conf['preUsergroup']):array();
