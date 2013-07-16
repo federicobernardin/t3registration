@@ -587,7 +587,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
             );
         }
         //if preview is disabled calls directly endRegistration and save user without showing a user preview
-        if (($preview && !$this->conf['enablePreview']) || ($this->piVars['sendConfirmation'] == 1 && isset($this->piVars['confirmPreview']) && $preview)) {
+        if (($preview && !$this->conf['enablePreview']) || ($this->piVars['sendConfirmation'] == 1 && isset($this->piVars['confirmPreview']) && $preview) || (isset($this->userLogged) && isset($this->piVars['confirmPreview']) && $preview)) {
             return $this->endRegistration();
         }
 
