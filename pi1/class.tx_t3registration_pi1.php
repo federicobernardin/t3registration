@@ -1560,7 +1560,7 @@ class tx_t3registration_pi1 extends tslib_pibase {
      * @return    void
      */
     protected function sendEmail($message, $user, $subject) {
-        if (t3lib_div::int_from_ver(TYPO3_version) < t3lib_div::int_from_ver('4.5.0')) {
+        if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) < t3lib_utility_VersionNumber::convertVersionNumberToInteger('4.5.0')) {
             $mailObject = t3lib_div::makeInstance('t3lib_htmlmail');
             $mailObject->start();
             $mailObject->mailer = 'TYPO3 HTMLMail';
