@@ -199,7 +199,7 @@ class tx_t3registration_tcaexternalfunctions{
                 'SELECT' => t3lib_BEfunc::getCommonSelectFields($foreign_table, $foreign_table . '.'),
                 'FROM' => $foreign_table,
                 'WHERE' => $foreign_table . '.pid=0 ' .
-                    self::deleteClause($foreign_table) . ' ' .
+				t3lib_BEfunc::deleteClause($foreign_table) . ' ' .
                     $wgolParts['WHERE'],
                 'GROUPBY' => $wgolParts['GROUPBY'],
                 'ORDERBY' => $wgolParts['ORDERBY'],

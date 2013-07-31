@@ -1,3 +1,7 @@
+2013-07-31 Federico Bernardin <federico@bernardin.it>
+    * Fixed bug on preview (userLogged)
+    * Remove reference to self in tcaexternalfunction
+
 2013-07-16 Federico Bernardin <federico@bernardin.it>
     * Fixed bug when user change his profile (bug on forge #48682)
 
