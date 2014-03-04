@@ -1,9 +1,0 @@
-<phpunit>
-
-    <filter>
-        <whitelist>
-            <directory suffix=".php">/Users/federico/Sites/projects/t3registration/pi1</directory>
-        </whitelist>
-    </filter>
-
-</phpunit>

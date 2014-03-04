@@ -1,6 +1,7 @@
 <?php
-$extpath = t3lib_extMgm::extPath('t3registration');
-return array(
-	'tx_t3registration_compatibility' => $extpath . 'library/class.tx_t3registration_compatibility.php'
-);
+//require_once(PATH_site . 'typo3temp/Cache/Code/cache_phpcode/user.php');
+$pippo = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('t3registration') . 'Classes/Cache/CacheBuilder.php';
+require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('t3registration') . 'Classes/Cache/CacheBuilder.php');
+$cacheBuilder = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\T3registration\Cache\CacheBuilder');
+return $cacheBuilder->build();
 ?>
