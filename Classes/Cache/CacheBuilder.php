@@ -4,11 +4,15 @@
 namespace TYPO3\T3registration\Cache;
 
 
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
 class CacheBuilder {
 
     const CACHE_FILE_LOCATION = 'typo3temp/Cache/Code/cache_phpcode/';
 
     private $usersClassExcludeProperties;
+
+    private $classProperties = array();
 
     public function __construct(){
         $this->usersClassExcludeProperties = array(
@@ -30,40 +34,33 @@ class CacheBuilder {
         require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('extbase') . 'Classes/Domain/Model/FrontendUser.php');
     }
 
+
+
     public function build() {
-        if (!isset($GLOBALS['TCA']['fe_users'])) {
-            \TYPO3\CMS\Core\Core\Bootstrap::getInstance()->loadCachedTca();
-        }
-        $columns = $GLOBALS['TCA']['fe_users']['columns'];
-        if(!class_exists('\TYPO3\CMS\Extbase\Domain\Model\FrontendUser')){
-            $this->includeLibrary();
-        }
-        /** @var \ReflectionClass $reflectedClass */
-        $reflectedClass = new \ReflectionClass('TYPO3\CMS\Extbase\Domain\Model\FrontendUser');
-        $properties = $reflectedClass->getProperties();
-        foreach ($properties as $property) {
-            $this->usersClassExcludeProperties[] = $property->getName();
-        }
-        foreach ($columns as $name => $column) {
-            $name = $this->to_camel_case($name);
-            if (!in_array($name, $this->usersClassExcludeProperties)) {
-                $gets[] = 'public function get' . ucfirst($name) . '(){ return $this->' . $name . ';}';
-                $sets[] = 'public function set' . ucfirst($name) . '($' . $name . '){ $this->' . $name . ' = $' . $name . '; return $this;}';
-                $variables[] = "/** @var string */\nprotected $" . $name . ';';
+        $this->getT3RegistrationExtensions();
+        return $this->temp($this->classProperties);
+    }
+
+    /**
+     * Get all loaded extensions which try to extend EXT:news
+     *
+     * @return array
+     */
+    protected function getT3RegistrationExtensions() {
+        $loadedExtensions = ExtensionManagementUtility::getLoadedExtensionListArray();
+
+        // Get the extensions which want to extend news
+        $this->classProperties = array();
+        foreach ($loadedExtensions as $extensionKey) {
+            $extensionInfoFile = ExtensionManagementUtility::extPath($extensionKey, 't3registration_extension.php');
+            if (file_exists($extensionInfoFile)) {
+                $newFieldsList = include($extensionInfoFile);
+                if(is_array($newFieldsList) && count($newFieldsList)){
+                    $this->classProperties = array_merge($this->classProperties,$newFieldsList);
+                }
             }
-
         }
-
-        $classSource = \TYPO3\CMS\Core\Utility\GeneralUtility::getUrl(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('t3registration') . '/Resources/Private/PHPFile/UserBaseModel.txt');
-
-        $code = implode("\n",$variables);
-        $code .= "\n" . implode("\n",$gets);
-        $code .= "\n" . implode("\n",$sets);
-
-        $code = str_replace('}',$code . "\n}",$classSource);
-        //file_put_contents(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('t3registration') . '/Classes/Domain/Model/User.php', $code);
-        file_put_contents(PATH_site . self::CACHE_FILE_LOCATION . 'User.php', $code);
-        return array('typo3\t3registration\domain\model\user' => PATH_site . self::CACHE_FILE_LOCATION . 'User.php');
+        return $this->classProperties;
     }
 
     /**
@@ -80,6 +77,39 @@ class CacheBuilder {
         }
         $func = create_function('$c', 'return strtoupper($c[1]);');
         return preg_replace_callback('/_([a-z])/', $func, $str);
+    }
+
+    /**
+     * @param $columns
+     * @param $gets
+     * @param $sets
+     * @param $variables
+     * @return array
+     */
+    private function temp($columns) {
+        $variables = array();
+        $gets = array();
+        $sets = array();
+        foreach ($columns as $name => $type) {
+            $name = $this->to_camel_case($name);
+            if (!in_array($name, $this->usersClassExcludeProperties)) {
+                $gets[] = 'public function get' . ucfirst($name) . '(){ return $this->' . $name . ';}';
+                $sets[] = 'public function set' . ucfirst($name) . '($' . $name . '){ $this->' . $name . ' = $' . $name . '; return $this;}';
+                $variables[] = "/** @var " . $type . " */\nprotected $" . $name . ';';
+            }
+
+        }
+
+        $classSource = \TYPO3\CMS\Core\Utility\GeneralUtility::getUrl(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('t3registration') . '/Resources/Private/PHPFile/UserBaseModel.txt');
+
+        $code = implode("\n", $variables);
+        $code .= "\n" . implode("\n", $gets);
+        $code .= "\n" . implode("\n", $sets);
+
+        $code = str_replace('}', $code . "\n}", $classSource);
+        //file_put_contents(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('t3registration') . '/Classes/Domain/Model/User.php', $code);
+        file_put_contents(PATH_site . self::CACHE_FILE_LOCATION . 'User.php', $code);
+        return array('typo3\t3registration\domain\model\user' => PATH_site . self::CACHE_FILE_LOCATION . 'User.php');
     }
 
 }
