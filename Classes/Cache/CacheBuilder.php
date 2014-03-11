@@ -1,4 +1,29 @@
 <?php
+/***************************************************************
+ *  Copyright notice
+ *
+ *  (c) Federico Bernardin 2014
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *  A copy is found in the textfile GPL.txt and important notices to the license
+ *  from the author is found in LICENSE.txt distributed with these scripts.
+ *
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 
 namespace TYPO3\T3registration\Cache;
@@ -6,14 +31,34 @@ namespace TYPO3\T3registration\Cache;
 
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
+/**
+ * Class CacheBuilder
+ * This class prepare the general Frontend User class extending all extension files
+ *
+ * @author Federico Bernardin <federico@bernardin.it>
+ *
+ * @package TYPO3\T3registration\Cache
+ */
 class CacheBuilder {
 
+    /**
+     * Frontend user cached file
+     */
     const CACHE_FILE_LOCATION = 'typo3temp/Cache/Code/cache_phpcode/';
 
-    private $usersClassExcludeProperties;
-
+    /**
+     * @var array list of class properties
+     */
     private $classProperties = array();
 
+    /**
+     * @var array list of excluded properties name
+     */
+    private $usersClassExcludeProperties;
+
+    /**
+     * Fills the usersClassExcludeProperties with correct fields
+     */
     public function __construct(){
         $this->usersClassExcludeProperties = array(
             'starttime',
@@ -26,27 +71,21 @@ class CacheBuilder {
         );
     }
 
-    private function includeLibrary(){
-        require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('extbase') . 'Classes/Persistence/ObjectMonitoringInterface.php');
-        require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('extbase') . 'Classes/DomainObject/DomainObjectInterface.php');
-        require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('extbase') . 'Classes/DomainObject/AbstractDomainObject.php');
-        require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('extbase') . 'Classes/DomainObject/AbstractEntity.php');
-        require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('extbase') . 'Classes/Domain/Model/FrontendUser.php');
-    }
-
-
-
+    /**
+     * Generate the file and return the array suitable to ext_autoload.php
+     * @return array suitable array to ext_autoload.php
+     */
     public function build() {
         $this->getT3RegistrationExtensions();
-        return $this->temp($this->classProperties);
+        return $this->createTemporaryClass($this->classProperties);
     }
 
     /**
-     * Get all loaded extensions which try to extend EXT:news
+     * Get all loaded extensions which try to extend Frontend user class
      *
      * @return array
      */
-    protected function getT3RegistrationExtensions() {
+    private function getT3RegistrationExtensions() {
         $loadedExtensions = ExtensionManagementUtility::getLoadedExtensionListArray();
 
         // Get the extensions which want to extend news
@@ -71,7 +110,7 @@ class CacheBuilder {
      * @param bool $capitalise_first_char If true, capitalise the first char in $str
      * @return string $str translated into camel caps
      */
-    function to_camel_case($str, $capitalise_first_char = false) {
+    private function to_camel_case($str, $capitalise_first_char = false) {
         if($capitalise_first_char) {
             $str[0] = strtoupper($str[0]);
         }
@@ -80,13 +119,11 @@ class CacheBuilder {
     }
 
     /**
-     * @param $columns
-     * @param $gets
-     * @param $sets
-     * @param $variables
+     * Generates the final class for Frontend user model and saves it to cache directory
+     * @param array $columns list of properties extending model
      * @return array
      */
-    private function temp($columns) {
+    private function createTemporaryClass($columns) {
         $variables = array();
         $gets = array();
         $sets = array();
@@ -107,7 +144,6 @@ class CacheBuilder {
         $code .= "\n" . implode("\n", $sets);
 
         $code = str_replace('}', $code . "\n}", $classSource);
-        //file_put_contents(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('t3registration') . '/Classes/Domain/Model/User.php', $code);
         file_put_contents(PATH_site . self::CACHE_FILE_LOCATION . 'User.php', $code);
         return array('typo3\t3registration\domain\model\user' => PATH_site . self::CACHE_FILE_LOCATION . 'User.php');
     }
