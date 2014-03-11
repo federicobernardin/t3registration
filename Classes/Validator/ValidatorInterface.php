@@ -47,8 +47,9 @@ interface ValidatorInterface {
     /**
      * Valid the value
      * @param mixed $value the value to test
+     * @param string $name
      * @param array $row optional list of value to compare
      * @return boolean
      */
-    public function valid($value,$row = array());
+    public function valid($value,$name,$row = array());
 }

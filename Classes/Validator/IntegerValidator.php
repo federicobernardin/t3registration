@@ -52,7 +52,7 @@ class IntegerValidator implements ValidatorInterface{
     /**
      * {@inheritdoc }
      */
-    public function valid($value, $row = array()) {
+    public function valid($value, $name, $row = array()) {
         return MathUtility::canBeInterpretedAsInteger($value);
     }
 
