@@ -30,6 +30,8 @@
 namespace TYPO3\T3registration\Utility;
 
 
+use TYPO3\T3registration\Validator\ValidatorInterface;
+
 /**
  * Class ValidatorUtility manages the operation of validator (add, remove, get, etc...)
  *
@@ -40,13 +42,49 @@ class ValidatorUtility {
 
     static private $validators = array();
 
+    /**
+     * Add the validator
+     * @param ValidatorInterface $validator the validator to add
+     */
     static public function addValidator($validator){
         if(class_exists($validator) && !array_key_exists($validator,self::$validators)){
-            self::$validators[$validator] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($validator);
+            $validatorClass = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance($validator);
+            if($validatorClass instanceof ValidatorInterface){
+                self::$validators[$validator] = $validatorClass;
+            }
         }
     }
 
+    static public function removeAll(){
+        foreach(self::$validators as $validatorKey => $validator){
+            self::removeValidator($validatorKey);
+        }
+    }
+
+    static public function removeValidator($validator){
+        if(array_key_exists($validator,self::$validators)){
+            unset(self::$validators[$validator]);
+        }
+    }
+
+    /**
+     * @return array validators array
+     */
     static public function getValidators(){
         return self::$validators;
+    }
+
+    /**
+     * return specific validator object or null id it's not found
+     * @param string $key key to search
+     * @return null|ValidatorInterface the specific validator or null
+     */
+    static public function getValidator($key){
+        if(isset(self::$validators[$key])){
+            return self::$validators[$key];
+        }
+        else{
+            return null;
+        }
     }
 }
