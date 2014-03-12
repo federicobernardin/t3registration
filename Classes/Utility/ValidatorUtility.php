@@ -55,12 +55,19 @@ class ValidatorUtility {
         }
     }
 
+    /**
+     * Remove all validator
+     */
     static public function removeAll(){
         foreach(self::$validators as $validatorKey => $validator){
             self::removeValidator($validatorKey);
         }
     }
 
+    /**
+     * Remove single validator from key
+     * @param $validator
+     */
     static public function removeValidator($validator){
         if(array_key_exists($validator,self::$validators)){
             unset(self::$validators[$validator]);

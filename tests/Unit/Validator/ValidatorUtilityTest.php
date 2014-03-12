@@ -28,7 +28,7 @@ class ValidatorUtilityTest extends  \TYPO3\CMS\Extbase\Tests\Unit\BaseTestCase {
     public function testRemoveValidator(){
         ValidatorUtility::addValidator('TYPO3\T3registration\Validator\\IntegerValidator');
         ValidatorUtility::removeValidator('TYPO3\T3registration\Validator\\IntegerValidator');
-        $this->assertEquals(1,count(ValidatorUtility::getValidators()));
+        $this->assertEquals(0,count(ValidatorUtility::getValidators()));
     }
 
     /**
