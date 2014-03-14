@@ -40,7 +40,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  * @author Federico Bernardin <federico@bernardin.it>
  * @package TYPO3\T3registration\Validator
  */
-class IntegerValidator implements ValidatorInterface{
+class IntegerValidator extends AbstractValidator{
 
     /**
      * {@inheritdoc }
@@ -52,8 +52,14 @@ class IntegerValidator implements ValidatorInterface{
     /**
      * {@inheritdoc }
      */
-    public function valid($value, $name, $row = array()) {
-        return MathUtility::canBeInterpretedAsInteger($value);
+    public function validate($value) {
+        if(!MathUtility::canBeInterpretedAsInteger($value)){
+            $this->addError(
+                'validator.integer.notvalid',
+                3000000002);
+        }
+        return $this->result;
+
     }
 
 

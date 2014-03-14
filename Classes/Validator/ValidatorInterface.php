@@ -37,6 +37,12 @@ namespace TYPO3\T3registration\Validator;
  */
 interface ValidatorInterface {
 
+    /**
+     * Return list of error
+     * @return \TYPO3\CMS\Extbase\Error\Error[] list of error
+     */
+    public function getErrors();
+
 
     /**
      * Returns translation key label
@@ -47,9 +53,7 @@ interface ValidatorInterface {
     /**
      * Valid the value
      * @param mixed $value the value to test
-     * @param string $name
-     * @param array $row optional list of value to compare
      * @return boolean
      */
-    public function valid($value,$name,$row = array());
+    public function validate($value);
 }

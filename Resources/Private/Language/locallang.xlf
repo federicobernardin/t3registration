@@ -10,7 +10,13 @@
 			<trans-unit id="tx_t3registration_domain_model_user.name">
 				<source>name</source>
 			</trans-unit>
-			
+
+
+
+            <trans-unit id="validator_string_notvalid">
+                <source>Field must be a string</source>
+            </trans-unit>
+
 		</body>
 	</file>
 </xliff>
