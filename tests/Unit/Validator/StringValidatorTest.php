@@ -3,31 +3,23 @@
 
 namespace Tests\Unit\Validator;
 
+require_once __DIR__ . '/AbstractValidatorTestcase.php';
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+class StringValidatorTest extends AbstractValidatorTestcase {
 
-class StringValidatorTest extends \TYPO3\CMS\Extbase\Tests\Unit\BaseTestCase {
-
-    /**
-     * @var \TYPO3\T3registration\Validator\StringValidator
-     */
-    private $fixture;
-
-    public function setUp() {
-        $this->fixture = GeneralUtility::makeInstance('TYPO3\\T3registration\\Validator\\StringValidator');
-    }
+    protected $validatorClassName = 'TYPO3\\T3registration\\Validator\\StringValidator';
 
     /**
      * @test
      */
     public function isStringCorrect(){
-        $this->assertFalse($this->fixture->validate('This is a string 222')->hasErrors());
+        $this->assertFalse($this->validator->validate('This is a string 222')->hasErrors());
     }
 
     /**
      * @test
      */
     public function isStringWrong(){
-        $this->assertTrue($this->fixture->validate(23)->hasErrors());
+        $this->assertTrue($this->validator->validate(23)->hasErrors());
     }
 }

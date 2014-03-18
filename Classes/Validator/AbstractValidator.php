@@ -11,7 +11,19 @@ class AbstractValidator implements ValidatorInterface {
      */
     protected $result;
 
-    public function __construct(){
+    /**
+     * @var array
+     */
+    protected $options = array();
+
+    /**
+     * Sets options for the validator
+     *
+     * @param array $validationOptions Options for the validator
+     * @api
+     */
+    public function __construct($validationOptions = array()) {
+        $this->options = $validationOptions;
         $this->result = new \TYPO3\CMS\Extbase\Error\Result();
     }
 

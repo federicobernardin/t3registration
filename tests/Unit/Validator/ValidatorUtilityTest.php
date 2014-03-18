@@ -6,7 +6,7 @@ namespace Tests\Unit\Validator;
 
 use TYPO3\T3registration\Utility\ValidatorUtility;
 
-class ValidatorUtilityTest extends  \TYPO3\CMS\Extbase\Tests\Unit\BaseTestCase {
+class ValidatorUtilityTest extends  \PHPUnit_Framework_TestCase {
 
     public function tearDown() {
         ValidatorUtility::removeAll();
