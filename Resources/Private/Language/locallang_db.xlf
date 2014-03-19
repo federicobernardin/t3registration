@@ -10,11 +10,30 @@
 			<trans-unit id="tx_t3registration_domain_model_user.name">
 				<source>Name</source>
 			</trans-unit>
-			
+
 			<trans-unit id="fe_users.tx_extbase_type.Tx_T3registration_User">
 				<source>T3Registration User</source>
 			</trans-unit>
-			
-		</body>
+
+
+            <!--FLEXFORM FIELD --->
+            <trans-unit id="flexform.sheet.fields">
+                <source>Fields</source>
+            </trans-unit>
+            <trans-unit id="flexform.field.name">
+                <source>Name</source>
+            </trans-unit>
+            <trans-unit id="flexform.field.validators">
+                <source>Validators</source>
+            </trans-unit>
+            <trans-unit id="flexform.field.hideInChangeProfileMode">
+                <source>Hide in change profile mode</source>
+            </trans-unit>
+            <trans-unit id="flexform.field.database">
+                <source>Database field</source>
+            </trans-unit>
+
+
+        </body>
 	</file>
 </xliff>

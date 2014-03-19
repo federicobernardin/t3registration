@@ -10,10 +10,19 @@
 
             <!--VALIDATORS-->
 			<trans-unit id="validator_integerValidator">
-				<source>integer</source>
+				<source>Integer</source>
 			</trans-unit>
             <trans-unit id="validator_stringValidator">
-                <source>string</source>
+                <source>String</source>
+            </trans-unit>
+            <trans-unit id="validator_dateValidator">
+                <source>Date</source>
+            </trans-unit>
+            <trans-unit id="validator_regexpValidator">
+                <source>Regexp</source>
+            </trans-unit>
+            <trans-unit id="validator_requiredValidator">
+                <source>Required</source>
             </trans-unit>
 
 			<trans-unit id="fe_users.tx_extbase_type.Tx_T3registration_User">
