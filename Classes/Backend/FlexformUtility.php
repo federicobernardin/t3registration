@@ -23,7 +23,7 @@ class FlexformUtility {
         }
     }
 
-    public function getFrontendUserValidators(array &$config, \TYPO3\CMS\Backend\Form\FormEngine $parentFormObject) {
+    public function getFrontendUserValidators(array &$config,$parentFormObject) {
         $validators = ValidatorUtility::getValidators();
         foreach ($validators as $key => $validator) {
             if(strstr('LLL',$validator->getLabel()) != false){

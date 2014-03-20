@@ -16,11 +16,14 @@
 			</trans-unit>
 
 
-            <!--FLEXFORM FIELD --->
+            <!--FLEXFORM FIELD -->
             <trans-unit id="flexform.sheet.fields">
                 <source>Fields</source>
             </trans-unit>
             <trans-unit id="flexform.field.name">
+                <source>Name</source>
+            </trans-unit>
+            <trans-unit id="flexform.field.external.name">
                 <source>Name</source>
             </trans-unit>
             <trans-unit id="flexform.field.validators">
@@ -29,8 +32,14 @@
             <trans-unit id="flexform.field.hideInChangeProfileMode">
                 <source>Hide in change profile mode</source>
             </trans-unit>
+            <trans-unit id="flexform.field.useAsUsername">
+                <source>Use this field as username</source>
+            </trans-unit>
             <trans-unit id="flexform.field.database">
                 <source>Database field</source>
+            </trans-unit>
+            <trans-unit id="flexform.field.free">
+                <source>Free field</source>
             </trans-unit>
 
 
