@@ -1,0 +1,46 @@
+
+#ext-t3registration-report h2.section-header {
+    margin: 15px 0 10px 0;
+    padding: 2px 0 0 20px;
+    cursor: pointer;
+    clear: left;
+}
+#ext-t3registration-report h2.collapsed {
+    background-image:url(../../../../gfx/arrowright.png);
+    background-repeat:no-repeat;
+}
+#ext-t3registration-report h2.expanded {
+    background-image:url(../../../../gfx/arrowdown.png);
+    background-repeat:no-repeat;
+}
+#ext-t3registration-report h2.section-header img {
+    margin-right:2px;
+    vertical-align:bottom;
+}
+
+#ext-t3registration-report .message-body {
+    clear: left;
+}
+
+#ext-t3registration-report .message-body p {
+    padding: 5px 0;
+}
+
+#ext-t3registration-report .message-body ul {
+    padding-top: 5px;
+    list-style: disc;
+}
+
+#ext-t3registration-report .message-body ol {
+    padding-top: 5px;
+    list-style: decimal;
+}
+
+#ext-t3registration-report .message-left {
+    float: left;
+    width: 200px;
+}
+
+#ext-t3registration-report .message-right {
+    float: left;
+}
