@@ -16,6 +16,7 @@ class ValidatorUtilityTest extends  \PHPUnit_Framework_TestCase {
      * @test
      */
     public function testAddValidatorImplementedInterface(){
+        ValidatorUtility::removeAll();
         ValidatorUtility::addValidator('TYPO3\T3registration\Validator\\IntegerValidator');
         $this->assertEquals(1,count(ValidatorUtility::getValidators()));
     }
@@ -26,6 +27,7 @@ class ValidatorUtilityTest extends  \PHPUnit_Framework_TestCase {
      * @test
      */
     public function testRemoveValidator(){
+        ValidatorUtility::removeAll();
         ValidatorUtility::addValidator('TYPO3\T3registration\Validator\\IntegerValidator');
         ValidatorUtility::removeValidator('TYPO3\T3registration\Validator\\IntegerValidator');
         $this->assertEquals(0,count(ValidatorUtility::getValidators()));
@@ -35,6 +37,7 @@ class ValidatorUtilityTest extends  \PHPUnit_Framework_TestCase {
      * @test
      */
     public function testAddValidatorNotImplementedInterface(){
+        ValidatorUtility::removeAll();
         ValidatorUtility::addValidator('TYPO3\\T3registration\\Cache\\CacheBuilder');
         $this->assertEquals(0,count(ValidatorUtility::getValidators()));
     }
