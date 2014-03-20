@@ -1,0 +1,53 @@
+<f:layout name="Default" />
+
+This template displays a NEW form for the current domain object.
+
+If you modify this template, do not forget to change the overwrite settings
+in /Configuration/ExtensionBuilder/settings.yaml:
+  Resources:
+    Private:
+      Templates:
+        New.html: keep
+
+Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+
+<f:section name="main">
+<h1>New User</h1>
+    <div id="ext-t3registration-report">
+        <f:if condition="{messages.errors->f:count()} > 0">
+            <f:then>
+                <f:for each="{messages.errors}" as="message">
+                    <div class="typo3-message message-error">
+                        <div class="header-container">
+                            <div class="message-header message-left">{message.code}</div>
+                            <div class="message-header message-right">{message.title}</div>
+                        </div>
+                        <div class="message-body">{message.message}</div>
+                    </div>
+                </f:for>
+            </f:then>
+        </f:if>
+
+        <f:if condition="{messages.warnings->f:count()} > 0">
+            <f:then>
+                <f:for each="{messages.warnings}" as="message">
+                    <div class="typo3-message message-error">
+                        <div class="header-container">
+                            <div class="message-header message-left">{message.code}</div>
+                            <div class="message-header message-right">{message.title}</div>
+                        </div>
+                        <div class="message-body">{message.message}</div>
+                    </div>
+                </f:for>
+            </f:then>
+        </f:if>
+
+    </div>
+
+<f:render partial="FormErrors" arguments="{object:User}"/>
+
+<f:form action="create"  name="newUser" object="{newUser}">
+<f:render partial="User/FormFields" />
+	<f:form.submit value="Create new" />
+</f:form>
+</f:section>
