@@ -112,7 +112,7 @@ define('HTML', 1);
  */
 define('TEXT', 2);
 
-require_once(PATH_tslib . 'class.tslib_pibase.php');
+//require_once(PATH_tslib . 'class.tslib_pibase.php');
 require_once(t3lib_extMgm::extPath('t3registration') . 'library/class.tx_t3registration_checkstatus.php');
 require_once(t3lib_extMgm::extPath('t3registration') . 'library/class.tx_t3registration_tcaexternalfunctions.php');
 
