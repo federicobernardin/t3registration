@@ -40,10 +40,7 @@
                         <type>array</type>
                         <el>
                             <databaseField>
-                                <tx_templavoila type="array">
-                                    <title>LLL:EXT:t3registration/Resources/Private/Language/locallang_db.xlf:flexform.field.database</title>
-                                </tx_templavoila>
-                                <title>Field</title>
+                                <title>LLL:EXT:t3registration/Resources/Private/Language/locallang_db.xlf:flexform.field.database</title>
                                 <type>array</type>
                                 <el>
                                     <name>
@@ -74,6 +71,15 @@
                                             </config>
                                         </TCEforms>
                                     </validators>
+                                    <regExpValue>
+                                        <TCEforms>
+                                            <label>LLL:EXT:t3registration/Resources/Private/Language/locallang_db.xlf:flexform.field.regExpValue</label>
+                                            <config>
+                                                <type>user</type>
+                                                <userFunc>TYPO3\T3registration\Backend\FlexformUtility->getRegularExpressionField</userFunc>
+                                            </config>
+                                        </TCEforms>
+                                    </regExpValue>
                                     <hideInChangeProfile>
                                         <TCEforms>
                                             <label>LLL:EXT:t3registration/Resources/Private/Language/locallang_db.xlf:flexform.field.hideInChangeProfileMode</label>
@@ -92,49 +98,6 @@
                                     </useAsUsername>
                                 </el>
                             </databaseField>
-                            <freeField>
-                                <tx_templavoila type="array">
-                                    <title>LLL:EXT:t3registration/Resources/Private/Language/locallang_db.xlf:field.free</title>
-                                </tx_templavoila>
-                                <type>array</type>
-                                <el>
-
-                                    <name>
-                                        <TCEforms>
-                                            <label>LLL:EXT:t3registration/Resources/Private/Language/locallang_db.xlf:flexform.field.external.name</label>
-                                            <config>
-                                                <type>input</type>
-                                                <eval>required</eval>
-                                            </config>
-                                        </TCEforms>
-                                    </name>
-                                    <validators>
-                                        <TCEforms>
-                                            <label>LLL:EXT:t3registration/Resources/Private/Language/locallang_db.xlf:flexform.field.validators</label>
-                                            <config>
-                                                <type>select</type>
-                                                <size>3</size>
-                                                <itemsProcFunc>TYPO3\T3registration\Backend\FlexformUtility->getFrontendUserValidators</itemsProcFunc>
-                                                <autoSizeMax>5</autoSizeMax>
-                                                <minitems>0</minitems>
-                                                <maxitems>100</maxitems>
-                                                <selectedListStyle>width:250px;height:100px;</selectedListStyle>
-                                                <itemListStyle>width:250px;height:100px;</itemListStyle>
-                                            </config>
-                                        </TCEforms>
-                                    </validators>
-                                    <hideInChangeProfile>
-                                        <TCEforms>
-                                            <label>LLL:EXT:t3registration/Resources/Private/Language/locallang_db.xlf:flexform.field.hideInChangeProfileMode</label>
-                                            <config>
-                                                <type>check</type>
-                                            </config>
-                                        </TCEforms>
-                                    </hideInChangeProfile>
-
-                                </el>
-                            </freeField>
-
                         </el>
                     </settings.fields>
                 </el>
