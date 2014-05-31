@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Tests\Unit\Validator;
+namespace TYPO3\T3registration\Tests\Unit\Validator;
 
 
 require_once __DIR__ . '/AbstractValidatorTestcase.php';
