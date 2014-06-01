@@ -6,11 +6,11 @@
     clear: left;
 }
 #ext-t3registration-report h2.collapsed {
-    background-image:url(../../../../gfx/arrowright.png);
+    background-image:url(../Icons/arrowright.png);
     background-repeat:no-repeat;
 }
 #ext-t3registration-report h2.expanded {
-    background-image:url(../../../../gfx/arrowdown.png);
+    background-image:url(../Icons/arrowdown.png);
     background-repeat:no-repeat;
 }
 #ext-t3registration-report h2.section-header img {

@@ -69,9 +69,9 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
         $this->report = new \TYPO3\T3registration\Report\Report();
         $this->report->setView($this->view);
         $this->report->checkConfiguration($this->settings);
-        $this->response->addAdditionalHeaderData('<link rel="stylesheet" type="text/css" href="' . ExtensionManagementUtility::siteRelPath('t3skin') . 'stylesheets/structure/element_message.css" />');
-        $this->response->addAdditionalHeaderData('<link rel="stylesheet" type="text/css" href="' . ExtensionManagementUtility::siteRelPath('t3skin') . 'stylesheets/visual/element_message.css" />');
-        $this->response->addAdditionalHeaderData('<link rel="stylesheet" type="text/css" href="' . ExtensionManagementUtility::siteRelPath('t3registration') . 'Resources/Public/css/message.css" />');
+        $this->response->addAdditionalHeaderData('<link rel="stylesheet" type="text/css" href="' . ExtensionManagementUtility::siteRelPath('t3skin') . 'Resources/Public/Css/visual/element_message.css" />');
+        $this->response->addAdditionalHeaderData('<link rel="stylesheet" type="text/css" href="' . ExtensionManagementUtility::siteRelPath('t3skin') . 'Resources/Public/Css/structure/element_message.css" />');
+        $this->response->addAdditionalHeaderData('<link rel="stylesheet" type="text/css" href="' . ExtensionManagementUtility::siteRelPath('t3registration') . 'Resources/Public/Css/message.css" />');
     }
 
     /**

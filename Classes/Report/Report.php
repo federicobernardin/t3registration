@@ -66,6 +66,11 @@ class Report {
     private $settings = array();
 
     /**
+     * @var \TYPO3\CMS\Core\Log\Logger
+     */
+    private $logger;
+
+    /**
      * Controller View
      * @param \TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view
      */
@@ -79,13 +84,17 @@ class Report {
      * @param array $settings
      */
     public function checkConfiguration(array $settings) {
+        $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
         $this->result = new Result();
         $this->settings = $settings;
         $this->testDuplicate();
         $this->testForUniqueUsernameField();
+        foreach($this->result->getErrors() as $error){
+            $this->logger->log(\TYPO3\CMS\Core\Log\LogLevel::CRITICAL, $error->getMessage());
+        }
         $this->view->assign('messages', $this->result);
         if(!GeneralUtility::cmpIP(GeneralUtility::getIndpEnv('REMOTE_ADDR'), $GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'])){
-            throw new \Exception('T3Registration misconfiguration');
+            throw new \Exception('T3Registration misconfiguration. View TYPO3 log.');
         }
     }
 
@@ -96,7 +105,7 @@ class Report {
         $unique = array();
         $duplicated = array();
         foreach ($this->settings['fields'] as $field) {
-            if (in_array($field['databaseField']['name'], $unique)) {
+            if (!in_array($field['databaseField']['name'], $unique)) {
                 $unique[] = $field['databaseField']['name'];
             } else {
                 $duplicated[$field['databaseField']['name']] = $field['databaseField']['name'];
