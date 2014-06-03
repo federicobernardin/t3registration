@@ -28,6 +28,8 @@ use TYPO3\CMS\Core\FormProtection\Exception;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Error\Error;
 use TYPO3\CMS\Extbase\Error\Result;
+use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
+use TYPO3\T3registration\Utility\ValidatorUtility;
 
 /**
  *
@@ -61,17 +63,45 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
      * @return void
      */
     public function newAction(\TYPO3\T3registration\Domain\Model\User $newUser = NULL) {
-        $this->checkConfiguration();
+        //$this->checkConfiguration();
+        $validator = ValidatorUtility::getValidator('TYPO3\\T3registration\\Validator\\UniqueInPidValidator');
+        $validator->setOptions(array('pid' => 36));
+        if($validator->validate('federico')){
+            echo('VALIDATE');
+            exit;
+        }
+        else{
+            echo('NOT VALIDATE');
+            exit;
+        }
         $this->view->assign('newUser', $newUser);
     }
 
-    private function checkConfiguration(){
+    protected function setViewConfiguration(ViewInterface $view) {
+        parent::setViewConfiguration($view);
         $this->report = new \TYPO3\T3registration\Report\Report();
-        $this->report->setView($this->view);
-        $this->report->checkConfiguration($this->settings);
-        $this->response->addAdditionalHeaderData('<link rel="stylesheet" type="text/css" href="' . ExtensionManagementUtility::siteRelPath('t3skin') . 'Resources/Public/Css/visual/element_message.css" />');
-        $this->response->addAdditionalHeaderData('<link rel="stylesheet" type="text/css" href="' . ExtensionManagementUtility::siteRelPath('t3skin') . 'Resources/Public/Css/structure/element_message.css" />');
-        $this->response->addAdditionalHeaderData('<link rel="stylesheet" type="text/css" href="' . ExtensionManagementUtility::siteRelPath('t3registration') . 'Resources/Public/Css/message.css" />');
+        $this->report->setView($view);
+        $notHasError = $this->report->checkConfiguration($this->settings);
+        if(!$notHasError){
+            $view->setTemplatePathAndFilename(ExtensionManagementUtility::extPath('t3registration') . 'Resources/Private/Templates/Registration/Error.html');
+        }
+    }
+
+    public function callActionMethod() {
+        if(!$this->report->hasError()){
+            parent::callActionMethod();
+        }
+        else{
+             $this->view->assign('messages', $this->report->getError());
+            $this->response->addAdditionalHeaderData('<link rel="stylesheet" type="text/css" href="' . ExtensionManagementUtility::siteRelPath('t3skin') . 'Resources/Public/Css/visual/element_message.css" />');
+            $this->response->addAdditionalHeaderData('<link rel="stylesheet" type="text/css" href="' . ExtensionManagementUtility::siteRelPath('t3skin') . 'Resources/Public/Css/structure/element_message.css" />');
+            $this->response->addAdditionalHeaderData('<link rel="stylesheet" type="text/css" href="' . ExtensionManagementUtility::siteRelPath('t3registration') . 'Resources/Public/Css/message.css" />');
+            $this->response->appendContent($this->view->render('Error'));
+        }
+    }
+
+    private function checkConfiguration(){
+
     }
 
     /**
