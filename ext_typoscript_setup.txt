@@ -1,20 +1,13 @@
 config.tx_extbase{
     persistence{
         classes{
-
-            TYPO3\CMS\Extbase\Domain\Model\FrontendUser {
-                subclasses {
-                    Tx_T3registration_User = TYPO3\T3registration\Domain\Model\User
-					
-          		}
-            }
             TYPO3\T3registration\Domain\Model\User {
                 mapping {
                     tableName = fe_users
-                    recordType = Tx_T3registration_User
+                    recordType =
                 }
             }
-            
+
     	}
     }
 }
