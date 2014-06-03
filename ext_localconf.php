@@ -27,6 +27,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clea
 \TYPO3\T3registration\Utility\ValidatorUtility::addValidator('TYPO3\\T3registration\\Validator\\StringValidator');
 \TYPO3\T3registration\Utility\ValidatorUtility::addValidator('TYPO3\\T3registration\\Validator\\RequiredValidator');
 \TYPO3\T3registration\Utility\ValidatorUtility::addValidator('TYPO3\\T3registration\\Validator\\RegexpValidator');
+\TYPO3\T3registration\Utility\ValidatorUtility::addValidator('TYPO3\\T3registration\\Validator\\UniqueValidator');
+\TYPO3\T3registration\Utility\ValidatorUtility::addValidator('TYPO3\\T3registration\\Validator\\UniqueInPidValidator');
 
 //require_once(PATH_site . 'typo3temp/Cache/Code/cache_phpcode/user.php');
 ?>
