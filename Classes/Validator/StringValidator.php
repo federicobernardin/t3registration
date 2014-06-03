@@ -21,6 +21,6 @@ class StringValidator extends AbstractValidator{
             $this->addError('validator.istring.notvalid',
                 3000000001);
         }
-        return $this->result;
+        return !$this->result->hasErrors();
     }
 }

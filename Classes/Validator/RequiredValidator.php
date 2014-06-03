@@ -22,7 +22,7 @@ class RequiredValidator extends AbstractValidator{
                 'validator.required.notvalid',
                 3000000003);
         }
-        return $this->result;
+        return !$this->result->hasErrors();
 
     }
 }

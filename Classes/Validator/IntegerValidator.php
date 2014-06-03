@@ -58,7 +58,7 @@ class IntegerValidator extends AbstractValidator{
                 'validator.integer.notvalid',
                 3000000002);
         }
-        return $this->result;
+        return !$this->result->hasErrors();
 
     }
 

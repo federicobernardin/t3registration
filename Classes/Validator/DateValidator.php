@@ -58,7 +58,7 @@ class DateValidator extends AbstractValidator{
                     'validator.date.wrongtype',
                     3000000010);
         }
-        return $this->result;
+        return !$this->result->hasErrors();
     }
 
     protected function testRange($date){

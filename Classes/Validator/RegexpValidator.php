@@ -32,8 +32,7 @@ class RegexpValidator extends AbstractValidator{
             $this->addError(
                 'validator.regexp.error',
                 3000000005);
-            return FALSE;
         }
-        return $this->result;
+        return !$this->result->hasErrors();
     }
 }
