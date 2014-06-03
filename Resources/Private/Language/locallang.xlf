@@ -11,6 +11,41 @@
 				<source>name</source>
 			</trans-unit>
 
+            <!--ERROR TRANSLATION -->
+
+            <trans-unit id="tx_t3registration_report_critical_error.header">
+                <source>Critical Errors</source>
+            </trans-unit>
+            <trans-unit id="tx_t3registration_report_critical_error.subheader">
+                <source>Some errors were found during elaborating process:</source>
+            </trans-unit>
+            <trans-unit id="tx_t3registration_report_critical_error_20001.codeTitle">
+                <source>Duplicate Field</source>
+            </trans-unit>
+            <trans-unit id="tx_t3registration_report_critical_error_20001.codeMessage">
+                <source>The %s field are duplicated in flexform, you must fix it.</source>
+            </trans-unit>
+            <trans-unit id="tx_t3registration_report_critical_error_20001.codeField">
+                <source>%s</source>
+            </trans-unit>
+            <trans-unit id="tx_t3registration_report_critical_error_20002.codeTitle">
+                <source>There are more than one username field</source>
+            </trans-unit>
+            <trans-unit id="tx_t3registration_report_critical_error_20002.codeMessage">
+                <source>This fields %s are set as username but only one can be username field, you must fix it.</source>
+            </trans-unit>
+            <trans-unit id="tx_t3registration_report_critical_error_20002.codeField">
+                <source>%s</source>
+            </trans-unit>
+            <trans-unit id="tx_t3registration_domain_model_user.name">
+                <source>name</source>
+            </trans-unit>
+            <trans-unit id="tx_t3registration_domain_model_user.name">
+                <source>name</source>
+            </trans-unit>
+            <trans-unit id="tx_t3registration_domain_model_user.name">
+                <source>name</source>
+            </trans-unit>
 
 
             <trans-unit id="validator_string_notvalid">

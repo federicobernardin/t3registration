@@ -1,5 +1,41 @@
-<div class="typo3-message message-error">
-    <div class="header-container">
-        <div class="message-body"> Your Install Tool session has expired. You have been logged out, please log in and try again.</div>
-    </div>
-</div>
+<f:layout name="Default" />
+
+This template displays a NEW form for the current domain object.
+
+If you modify this template, do not forget to change the overwrite settings
+in /Configuration/ExtensionBuilder/settings.yaml:
+Resources:
+Private:
+Templates:
+New.html: keep
+
+Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+
+<f:section name="main">
+    <div id="ext-t3registration-report">
+        <f:if condition="{messages.errors->f:count()} > 0">
+            <f:then>
+                <div class="error-header"><f:translate key="tx_t3registration_report_critical_error.header" >Critical Errors</f:translate></div>
+                <p class="error-subheader"><f:translate key="tx_t3registration_report_critical_error.subheader" >Some errors were found during elaborating process:</f:translate></p>
+                <f:for each="{messages.errors}" as="message">
+                    <div class="typo3-message message-error">
+                        <div class="header-container">
+                            <div class="message-header message-left"><f:translate key="tx_t3registration_report_critical_error_{message.code}.codeTitle">{message.code}</f:translate></div>
+                            <div class="message-header message-right"><f:translate key="tx_t3registration_report_critical_error_{message.code}.codeField" arguments="{message.arguments}">{message.code}</f:translate></div>
+                        </div>
+                        <div class="message-body"><f:translate key="tx_t3registration_report_critical_error_{message.code}.codeMessage" arguments="{message.arguments}">{message.code}</f:translate></div>
+                    </div>
+                </f:for>
+            </f:then>
+        </f:if>
+    <f:for each="{messages.warnings}" as="message">
+        <div class="typo3-message message-error">
+            <div class="header-container">
+                <div class="message-header message-left">{message.code}</div>
+                <div class="message-header message-right">{message.title}</div>
+            </div>
+            <div class="message-body">{message.message}</div>
+        </div>
+    </f:for>
+        </div>
+</f:section>

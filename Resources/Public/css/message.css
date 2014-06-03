@@ -44,3 +44,24 @@
 #ext-t3registration-report .message-right {
     float: left;
 }
+
+#ext-t3registration-report .error-header {
+    color: #555555;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-weight: bold;
+    font-size: 1.4em;
+    clear: left;
+    margin: 15px 0 0;
+    padding: 2px 0 0 20px;
+}
+
+#ext-t3registration-report p.error-subheader {
+    color: #555555;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-weight: bold;
+    font-size: 1em;
+    clear: left;
+    margin: 0 0 10px;
+    padding: 2px 0 0 20px;
+}
+
