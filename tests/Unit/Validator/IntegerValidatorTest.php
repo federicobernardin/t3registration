@@ -16,14 +16,14 @@ class IntegerValidatorTest extends AbstractValidatorTestcase {
      * @test
      */
     public function isNumberCorrect(){
-        $this->assertFalse($this->validator->validate('222736')->hasErrors());
+        $this->assertTrue($this->validator->validate('222736'));
     }
 
     /**
      * @test
      */
     public function isNumberWrong(){
-        $this->assertTrue($this->validator->validate('asder')->hasErrors());
+        $this->assertFalse($this->validator->validate('asder'));
 
     }
 }

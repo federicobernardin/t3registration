@@ -15,16 +15,16 @@ class RegexpValidatorTest extends AbstractValidatorTestcase {
      */
     public function regularExpressionValidatorMatchesABasicExpressionCorrectly(){
         $this->validatorOptions(array('regularExpression' => '/^simple[0-9]expression$/'));
-        $this->assertFalse($this->validator->validate('simple1expression')->hasErrors());
-        $this->assertTrue($this->validator->validate('simple1expressions')->hasErrors());
+        $this->assertTrue($this->validator->validate('simple1expression'));
+        $this->assertFalse($this->validator->validate('simple1expressions'));
     }
 
-    /**
+    /**$this->validator
      * @test
      */
     public function regularExpressionValidatorCreatesTheCorrectErrorIfTheExpressionDidNotMatch(){
         $this->validatorOptions(array('regularExpression' => '/^simple[0-9]expression$/'));
-        $errors = $this->validator->validate('some subject that will not match')->getErrors();
+        $this->assertFalse($this->validator->validate('some subject that will not match'));
 
     }
 }

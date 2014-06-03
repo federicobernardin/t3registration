@@ -13,13 +13,13 @@ class StringValidatorTest extends AbstractValidatorTestcase {
      * @test
      */
     public function isStringCorrect(){
-        $this->assertFalse($this->validator->validate('This is a string 222')->hasErrors());
+        $this->assertTrue($this->validator->validate('This is a string 222'));
     }
 
     /**
      * @test
      */
     public function isStringWrong(){
-        $this->assertTrue($this->validator->validate(23)->hasErrors());
+        $this->assertFalse($this->validator->validate(23));
     }
 }

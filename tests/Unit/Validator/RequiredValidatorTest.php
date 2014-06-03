@@ -14,14 +14,14 @@ class RequiredValidatorTest extends AbstractValidatorTestcase {
      * @test
      */
     public function isNumberCorrect(){
-        $this->assertFalse($this->validator->validate('value')->hasErrors());
+        $this->assertTrue($this->validator->validate('value'));
     }
 
     /**
      * @test
      */
     public function isNumberWrong(){
-        $this->assertTrue($this->validator->validate('')->hasErrors());
+        $this->assertFalse($this->validator->validate(''));
 
     }
 }
