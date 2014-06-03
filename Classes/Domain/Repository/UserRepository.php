@@ -5,7 +5,7 @@ namespace TYPO3\T3registration\Domain\Repository;
  *  Copyright notice
  *
  *  (c) 2014 Federico Bernardin <federico.bernardin@immaginario.com>, BFConsulting
- *  
+ *
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -34,5 +34,15 @@ namespace TYPO3\T3registration\Domain\Repository;
  */
 class UserRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
+    public function countUniqueByField($field,$value,$pid = 0){
+        $query = $this->createQuery();
+        if($pid){
+            $query->getQuerySettings()->setStoragePageIds(array($pid));
+        }
+        else{
+            $query->getQuerySettings()->setRespectStoragePage(false);
+        }
+        return $query->matching($query->equals($field,$value))->count();
+    }
 }
 ?>
