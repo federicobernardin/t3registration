@@ -43,8 +43,12 @@ use TYPO3\CMS\Extbase\Error\Result;
  */
 class Report {
 
-    const DUPLICATE_FIELD = 'Duplicate Field';
-    const DUPLICATE_USERNAME_FIELD = 'Duplicate Username Field';
+    const DUPLICATE_FIELD = 20001;
+    const DUPLICATE_USERNAME_FIELD = 20002;
+    const USERNAME_FIELD_IS_MISSED = 20003;
+    const USERNAME_MISS_UNIQUENESS = 20004;
+
+    private $uniquenessValidator = '';
 
     /**
      * @var \TYPO3\CMS\Extbase\Error\Result
@@ -82,6 +86,7 @@ class Report {
     /**
      * Main report function
      * @param array $settings
+     * @return true if not error has found
      */
     public function checkConfiguration(array $settings) {
         $this->logger = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Log\LogManager')->getLogger(__CLASS__);
@@ -92,10 +97,23 @@ class Report {
         foreach($this->result->getErrors() as $error){
             $this->logger->log(\TYPO3\CMS\Core\Log\LogLevel::CRITICAL, $error->getMessage());
         }
-        $this->view->assign('messages', $this->result);
         if(!GeneralUtility::cmpIP(GeneralUtility::getIndpEnv('REMOTE_ADDR'), $GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'])){
             throw new \Exception('T3Registration misconfiguration. View TYPO3 log.');
         }
+        if($this->result->hasErrors()){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    public function hasError(){
+        return $this->result->hasErrors();
+    }
+
+    public function getError(){
+        return $this->result;
     }
 
     /**
@@ -113,7 +131,7 @@ class Report {
         }
         if (count($duplicated)) {
             foreach ($duplicated as $field) {
-                $this->result->addError(new Error(sprintf('The %s field are duplicated in flexform, you must fix it.', $field), self::DUPLICATE_FIELD, array(), $field));
+                $this->result->addError(new Error(sprintf('The %s field are duplicated in flexform, you must fix it.', $field), self::DUPLICATE_FIELD, array($field), $field));
             }
         }
     }
@@ -125,11 +143,23 @@ class Report {
         $setAsUsername = array();
         foreach ($this->settings['fields'] as $field) {
             if ($field['databaseField']['useAsUsername']) {
-                $setAsUsername[] = $field['databaseField']['name'];
+                $setAsUsername[] = $field['databaseField'];
             }
         }
         if (count($setAsUsername) > 1) {
-            $this->result->addError(new Error(sprintf('This fields %s are set as username but only one can be username field, you must fix it.', implode(',', $setAsUsername)), self::DUPLICATE_USERNAME_FIELD, array(), implode(',', $setAsUsername)));
+            $this->result->addError(new Error(sprintf('This fields %s are set as username but only one can be username field, you must fix it.', implode(',', $setAsUsername['name'])), self::DUPLICATE_USERNAME_FIELD, array(implode(',', $setAsUsername['name'])), implode(',', $setAsUsername['name'])));
+        }
+        elseif(count($setAsUsername) == 0){
+            $this->result->addError(new Error(sprintf('Miss username field in flexform, you must fix it.'), self::USERNAME_FIELD_IS_MISSED, array(), ''));
+        }
+        else{
+            $this->verifyUniquenessForUsernameField($setAsUsername[0]);
+        }
+    }
+
+    private function verifyUniquenessForUsernameField($setAsUsername) {
+        if(!GeneralUtility::inList($setAsUsername['validators'],'TYPO3\\T3registration\\Validator\\UniqueValidator')){
+            $this->result->addError(new Error(sprintf('This fields %s are set as username but without unique validator, you must fix it.', $setAsUsername['name']), self::USERNAME_MISS_UNIQUENESS, array($setAsUsername['name']), $setAsUsername['name']));
         }
     }
 }
