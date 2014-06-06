@@ -37,7 +37,7 @@ class ValidatorManagerTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
         $result = new \TYPO3\CMS\Extbase\Error\Result();
         $this->fixture->_set('validators',array('TYPO3\T3registration\Validator\RequiredValidator' => $requiredValidator));
         $this->fixture->_set('result',$result);
-        $this->assertTrue($this->fixture->validate('',array()));
+        $this->assertFalse($this->fixture->validate('',array()));
         $this->assertEquals(1,count($this->fixture->getResult()->getErrors()));
     }
 }
