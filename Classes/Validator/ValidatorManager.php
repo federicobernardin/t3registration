@@ -28,7 +28,8 @@ class ValidatorManager {
         $validators = explode(',',$validatorList);
         $this->validators = array();
         foreach($validators as $validator){
-            $this->validators[$validator] = ValidatorUtility::getValidator($validator);
+            if(($validatorObject = ValidatorUtility::getValidator($validator)) !== null)
+            $this->validators[$validator] = $validatorObject;
         }
     }
 

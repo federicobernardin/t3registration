@@ -48,8 +48,8 @@
             </trans-unit>
 
 
-            <trans-unit id="validator_string_notvalid">
-                <source>Field must be a string</source>
+            <trans-unit id="error_validator.required.notvalid">
+                <source>Field is required</source>
             </trans-unit>
 
 		</body>

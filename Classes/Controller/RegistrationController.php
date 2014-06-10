@@ -56,24 +56,29 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
     protected $report;
 
     /**
+     * @var \TYPO3\T3registration\Validator\ValidatorManager
+     * @inject
+     */
+    protected $validatorManager;
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Error\Result
+     */
+    protected $argumentsResult;
+
+    /**
      * action new
      *
      * @param \TYPO3\T3registration\Domain\Model\User $newUser
-     * @dontvalidate $newUser
+     * @ignorevalidation $newUser
+     * @t3registrationIgnoreValidation
+     *
      * @return void
      */
     public function newAction(\TYPO3\T3registration\Domain\Model\User $newUser = NULL) {
         //$this->checkConfiguration();
         $validator = ValidatorUtility::getValidator('TYPO3\\T3registration\\Validator\\UniqueInPidValidator');
         $validator->setOptions(array('pid' => 36));
-        if($validator->validate('federico')){
-            echo('VALIDATE');
-            exit;
-        }
-        else{
-            echo('NOT VALIDATE');
-            exit;
-        }
         $this->view->assign('newUser', $newUser);
     }
 
@@ -89,6 +94,7 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
 
     public function callActionMethod() {
         if(!$this->report->hasError()){
+            $this->validateArguments();
             parent::callActionMethod();
         }
         else{
@@ -100,20 +106,85 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
         }
     }
 
-    private function checkConfiguration(){
+    private function validateFields($parameters){
+        $results = new \TYPO3\CMS\Extbase\Error\Result();
+        $fields = $this->prepareFlexformFields();
+        foreach($fields as $field){
+            if ($this->validatorManager->validate($parameters[$field['name']],$field) === true) {
+                continue;
+            }
+            $results->forProperty($field['name'])->merge($this->validatorManager->getResult());
+        }
+        return $results;
+    }
 
+    private function prepareFlexformFields(){
+        $fields = array();
+        if(isset($this->settings['fields']) && is_array($this->settings['fields'])){
+            foreach($this->settings['fields'] as $field){
+                $fields[] = $field['databaseField'];
+            }
+        }
+        return $fields;
     }
 
     /**
      * action create
+     * @var \TYPO3\T3registration\Domain\Model\User $newUser
      *
-     * @param \TYPO3\T3registration\Domain\Model\User $newUser
      * @return void
      */
     public function createAction(\TYPO3\T3registration\Domain\Model\User $newUser) {
         $this->userRepository->add($newUser);
         $this->flashMessageContainer->add('Your new User was created.');
         $this->redirect('list');
+    }
+
+    /**
+     * This function validates argument and if some errors raise forward to previous action
+     */
+    private function validateArguments(){
+        $arguments = $this->request->getArguments();
+        $this->argumentsResult = $this->validateFields($arguments['newUser']);
+        if(count($this->argumentsResult->getSubResults())){
+            $methodTagsValues = $this->reflectionService->getMethodTagsValues(get_class($this), $this->actionMethodName);
+            $ignoreValidationAnnotations = array();
+            //if set annotation for method ignore validation don't execute forwarding procedure
+            if (isset($methodTagsValues['t3registrationIgnoreValidation'])) {
+                return;
+            }
+            if (isset($methodTagsValues['ignorevalidation'])) {
+                $ignoreValidationAnnotations = $methodTagsValues['ignorevalidation'];
+            }
+            // if there exists more errors than in ignoreValidationAnnotations_=> call error method
+            // else => call action method
+            $shouldCallActionMethod = TRUE;
+            foreach ($this->argumentsResult->getSubResults() as $argumentName => $subValidationResult) {
+                if (!$subValidationResult->hasErrors()) {
+                    continue;
+                }
+                if (array_search('$' . $argumentName, $ignoreValidationAnnotations) !== FALSE) {
+                    continue;
+                }
+                $shouldCallActionMethod = FALSE;
+            }
+            if (!$shouldCallActionMethod) {
+                $this->forwardToPreviousAction();
+            }
+        }
+    }
+
+    /**
+     * Forward to previous action including errors
+     */
+    public function forwardToPreviousAction(){
+        $referringRequest = $this->request->getReferringRequest();
+        if ($referringRequest !== NULL) {
+            $originalRequest = clone $this->request;
+            $this->request->setOriginalRequest($originalRequest);
+            $this->request->setOriginalRequestMappingResults($this->argumentsResult);
+            $this->forward($referringRequest->getControllerActionName(), $referringRequest->getControllerName(), $referringRequest->getControllerExtensionName(), $referringRequest->getArguments());
+        }
     }
 
     /**
