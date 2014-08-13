@@ -56,6 +56,7 @@ class ValidatorManager {
             if(isset($this->options[$validatorName])){
                 $validator->setOptions($this->options[$validatorName]);
             }
+            $validator->prepareOptions($fieldConfiguration);
             if(!$validator->validate($value)){
                 foreach($validator->getErrors() as $error){
                     $this->result->addError($error);

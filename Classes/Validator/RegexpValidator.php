@@ -35,4 +35,13 @@ class RegexpValidator extends AbstractValidator{
         }
         return !$this->result->hasErrors();
     }
+
+    /**
+     * {@inheritdoc }
+     */
+    public function prepareOptions($configurationOptions = array()){
+        if(isset($configurationOptions['regExpValue'])){
+            $this->addOption('regularExpression',$configurationOptions['regExpValue']);
+        }
+    }
 }

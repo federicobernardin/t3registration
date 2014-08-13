@@ -71,4 +71,14 @@ class AbstractValidator implements ValidatorInterface {
         }
     }
 
+    /**
+     * add optional options by configuration
+     * Usually it is called by validatorManager with flexfomr Confirguration and set them to options
+     *
+     * @param array $configurationOptions
+     */
+    public function prepareOptions($configurationOptions = array()){
+
+    }
+
 }

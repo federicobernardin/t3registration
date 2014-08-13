@@ -26,7 +26,6 @@
  ***************************************************************/
 
 
-
 namespace TYPO3\T3registration\Validator;
 
 /**
@@ -35,7 +34,8 @@ namespace TYPO3\T3registration\Validator;
  * @author Federico Bernardin <federico@bernardin.it>
  * @package TYPO3\T3registration\Validator
  */
-interface ValidatorInterface {
+interface ValidatorInterface
+{
 
     /**
      * Return list of error
@@ -56,4 +56,12 @@ interface ValidatorInterface {
      * @return boolean
      */
     public function validate($value);
+
+    /**
+     * add optional options by configuration
+     * Usually it is called by validatorManager with flexform Configuration and set them to options
+     *
+     * @param array $configurationOptions
+     */
+    public function prepareOptions($configurationOptions);
 }
