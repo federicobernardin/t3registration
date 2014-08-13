@@ -198,6 +198,16 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
     }
 
     /**
+     * action edit
+     *
+     * @param \TYPO3\T3registration\Domain\Model\User $newUser
+     * @return void
+     */
+    public function previewAction(\TYPO3\T3registration\Domain\Model\User $newUser) {
+        $this->view->assign('user', $newUser);
+    }
+
+    /**
      * action update
      *
      * @param \TYPO3\T3registration\Domain\Model\User $user
