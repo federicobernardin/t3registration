@@ -97,7 +97,7 @@ class Report {
         foreach($this->result->getErrors() as $error){
             $this->logger->log(\TYPO3\CMS\Core\Log\LogLevel::CRITICAL, $error->getMessage());
         }
-        if(!GeneralUtility::cmpIP(GeneralUtility::getIndpEnv('REMOTE_ADDR'), $GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'])){
+        if($this->result->hasErrors() && !GeneralUtility::cmpIP(GeneralUtility::getIndpEnv('REMOTE_ADDR'), $GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'])){
             throw new \Exception('T3Registration misconfiguration. View TYPO3 log.');
         }
         if($this->result->hasErrors()){
