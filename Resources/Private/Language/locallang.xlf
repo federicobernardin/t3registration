@@ -8,7 +8,28 @@
 				<source>User</source>
 			</trans-unit>
 			<trans-unit id="tx_t3registration_domain_model_user.name">
-				<source>name</source>
+				<source>Name</source>
+			</trans-unit>
+			<trans-unit id="tx_t3registration_domain_model_user.firstName">
+				<source>FirstName</source>
+			</trans-unit>
+			<trans-unit id="tx_t3registration_domain_model_user.lastName">
+				<source>Lastname</source>
+			</trans-unit>
+			<trans-unit id="tx_t3registration_domain_model_user.username">
+				<source>Username</source>
+			</trans-unit>
+			<trans-unit id="tx_t3registration_domain_model_user.password">
+				<source>Password</source>
+			</trans-unit>
+			<trans-unit id="tx_t3registration_domain_model_user.telephone">
+				<source>Telephone</source>
+			</trans-unit>
+			<trans-unit id="tx_t3registration_domain_model_user.address">
+				<source>Address</source>
+			</trans-unit>
+			<trans-unit id="tx_t3registration_domain_model_user.city">
+				<source>City</source>
 			</trans-unit>
 
             <!--ERROR TRANSLATION -->
