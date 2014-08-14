@@ -1,0 +1,10 @@
+<f:form.validationResults for="{field}">
+    <f:if condition="{validationResults.flattenedErrors}">
+        <f:for each="{validationResults.errors}" as="error">
+            <ul>
+                <li><f:translate key="error_{error}">{error}</f:translate> </li>
+            </ul>
+            </li>
+        </f:for>
+    </f:if>
+</f:form.validationResults>

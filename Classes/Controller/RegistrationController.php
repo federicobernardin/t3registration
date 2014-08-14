@@ -1,29 +1,29 @@
 <?php
 namespace TYPO3\T3registration\Controller;
 
-    /***************************************************************
-     *  Copyright notice
-     *
-     *  (c) 2014 Federico Bernardin <federico.bernardin@immaginario.com>, BFConsulting
-     *
-     *  All rights reserved
-     *
-     *  This script is part of the TYPO3 project. The TYPO3 project is
-     *  free software; you can redistribute it and/or modify
-     *  it under the terms of the GNU General Public License as published by
-     *  the Free Software Foundation; either version 3 of the License, or
-     *  (at your option) any later version.
-     *
-     *  The GNU General Public License can be found at
-     *  http://www.gnu.org/copyleft/gpl.html.
-     *
-     *  This script is distributed in the hope that it will be useful,
-     *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-     *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     *  GNU General Public License for more details.
-     *
-     *  This copyright notice MUST APPEAR in all copies of the script!
-     ***************************************************************/
+/***************************************************************
+ *  Copyright notice
+ *
+ *  (c) 2014 Federico Bernardin <federico.bernardin@immaginario.com>, BFConsulting
+ *
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 use TYPO3\CMS\Core\FormProtection\Exception;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Error\Error;
@@ -38,7 +38,8 @@ use TYPO3\T3registration\Utility\ValidatorUtility;
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  *
  */
-class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
+class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+{
 
     /**
      * userRepository
@@ -67,38 +68,52 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
     protected $argumentsResult;
 
     /**
+     * @var string name of back button for returning from preview to edit
+     */
+    protected $backButtonName = 'Back';
+
+    /**
      * action new
      *
-     * @param \TYPO3\T3registration\Domain\Model\User $newUser
-     * @ignorevalidation $newUser
+     * @param \TYPO3\T3registration\Domain\Model\User $user
+     * @ignorevalidation $user
      * @t3registrationIgnoreValidation
      *
      * @return void
      */
-    public function newAction(\TYPO3\T3registration\Domain\Model\User $newUser = NULL) {
+    public function newAction(\TYPO3\T3registration\Domain\Model\User $user = NULL)
+    {
         //$this->checkConfiguration();
         $validator = ValidatorUtility::getValidator('TYPO3\\T3registration\\Validator\\UniqueInPidValidator');
         $validator->setOptions(array('pid' => 36));
-        $this->view->assign('newUser', $newUser);
+        $this->view->assign('user', $user);
     }
 
-    protected function setViewConfiguration(ViewInterface $view) {
+    protected function setViewConfiguration(ViewInterface $view)
+    {
         parent::setViewConfiguration($view);
         $this->report = new \TYPO3\T3registration\Report\Report();
         $this->report->setView($view);
         $notHasError = $this->report->checkConfiguration($this->settings);
-        if(!$notHasError){
+        if (!$notHasError) {
             $view->setTemplatePathAndFilename(ExtensionManagementUtility::extPath('t3registration') . 'Resources/Private/Templates/Registration/Error.html');
         }
     }
 
-    public function callActionMethod() {
-        if(!$this->report->hasError()){
+    public function SetSettingsToClass(){
+        if(isset($this->settings['backButtonName'])){
+            $this->backButtonName = $this->settings['backButtonName'];
+        }
+    }
+
+    public function callActionMethod()
+    {
+        if (!$this->report->hasError()) {
+            $this->SetSettingsToClass();
             $this->validateArguments();
             parent::callActionMethod();
-        }
-        else{
-             $this->view->assign('messages', $this->report->getError());
+        } else {
+            $this->view->assign('messages', $this->report->getError());
             $this->response->addAdditionalHeaderData('<link rel="stylesheet" type="text/css" href="' . ExtensionManagementUtility::siteRelPath('t3skin') . 'Resources/Public/Css/visual/element_message.css" />');
             $this->response->addAdditionalHeaderData('<link rel="stylesheet" type="text/css" href="' . ExtensionManagementUtility::siteRelPath('t3skin') . 'Resources/Public/Css/structure/element_message.css" />');
             $this->response->addAdditionalHeaderData('<link rel="stylesheet" type="text/css" href="' . ExtensionManagementUtility::siteRelPath('t3registration') . 'Resources/Public/Css/message.css" />');
@@ -106,22 +121,24 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
         }
     }
 
-    private function validateFields($parameters){
+    private function validateFields($parameters)
+    {
         $results = new \TYPO3\CMS\Extbase\Error\Result();
         $fields = $this->prepareFlexformFields();
-        foreach($fields as $field){
-            if ($this->validatorManager->validate($parameters[$field['name']],$field) === true) {
+        foreach ($fields as $field) {
+            if ($this->validatorManager->validate($parameters[$field['name']], $field) === true) {
                 continue;
             }
-            $results->forProperty($field['name'])->merge($this->validatorManager->getResult());
+            $results->forProperty('user')->forProperty($field['name'])->merge($this->validatorManager->getResult());
         }
         return $results;
     }
 
-    private function prepareFlexformFields(){
+    private function prepareFlexformFields()
+    {
         $fields = array();
-        if(isset($this->settings['fields']) && is_array($this->settings['fields'])){
-            foreach($this->settings['fields'] as $field){
+        if (isset($this->settings['fields']) && is_array($this->settings['fields'])) {
+            foreach ($this->settings['fields'] as $field) {
                 $fields[] = $field['databaseField'];
             }
         }
@@ -130,23 +147,40 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
 
     /**
      * action create
-     * @var \TYPO3\T3registration\Domain\Model\User $newUser
+     * @var \TYPO3\T3registration\Domain\Model\User $user
      *
      * @return void
      */
-    public function createAction(\TYPO3\T3registration\Domain\Model\User $newUser) {
-        $this->userRepository->add($newUser);
-        $this->flashMessageContainer->add('Your new User was created.');
-        $this->redirect('list');
+    public function createAction(\TYPO3\T3registration\Domain\Model\User $user)
+    {
+        $arguments = $this->request->getArguments();
+        if ($arguments[$this->backButtonName]) {
+            $this->forwardWithReferringDataToAction('new');
+        } else {
+            $this->userRepository->add($user);
+            $this->flashMessageContainer->add('Your new User was created.');
+            $this->redirect('new');
+        }
+    }
+
+    protected function forwardWithReferringDataToAction($action){
+        $referringRequest = $this->request->getReferringRequest();
+        if ($referringRequest !== NULL) {
+            $this->forward($action, $referringRequest->getControllerName(), $referringRequest->getControllerExtensionName(), $referringRequest->getArguments());
+        }
+        else{
+            throw new \Exception('Referring request not found');
+        }
     }
 
     /**
      * This function validates argument and if some errors raise forward to previous action
      */
-    private function validateArguments(){
+    private function validateArguments()
+    {
         $arguments = $this->request->getArguments();
-        $this->argumentsResult = $this->validateFields($arguments['newUser']);
-        if(count($this->argumentsResult->getSubResults())){
+        $this->argumentsResult = $this->validateFields($arguments['user']);
+        if (count($this->argumentsResult->getSubResults())) {
             $methodTagsValues = $this->reflectionService->getMethodTagsValues(get_class($this), $this->actionMethodName);
             $ignoreValidationAnnotations = array();
             //if set annotation for method ignore validation don't execute forwarding procedure
@@ -177,7 +211,8 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
     /**
      * Forward to previous action including errors
      */
-    public function forwardToPreviousAction(){
+    public function forwardToPreviousAction()
+    {
         $referringRequest = $this->request->getReferringRequest();
         if ($referringRequest !== NULL) {
             $originalRequest = clone $this->request;
@@ -193,18 +228,20 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
      * @param \TYPO3\T3registration\Domain\Model\User $user
      * @return void
      */
-    public function editAction(\TYPO3\T3registration\Domain\Model\User $user) {
+    public function editAction(\TYPO3\T3registration\Domain\Model\User $user)
+    {
         $this->view->assign('user', $user);
     }
 
     /**
      * action edit
      *
-     * @param \TYPO3\T3registration\Domain\Model\User $newUser
+     * @param \TYPO3\T3registration\Domain\Model\User $user
      * @return void
      */
-    public function previewAction(\TYPO3\T3registration\Domain\Model\User $newUser) {
-        $this->view->assign('user', $newUser);
+    public function previewAction(\TYPO3\T3registration\Domain\Model\User $user)
+    {
+        $this->view->assign('user', $user);
     }
 
     /**
@@ -213,7 +250,8 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
      * @param \TYPO3\T3registration\Domain\Model\User $user
      * @return void
      */
-    public function updateAction(\TYPO3\T3registration\Domain\Model\User $user) {
+    public function updateAction(\TYPO3\T3registration\Domain\Model\User $user)
+    {
         $this->userRepository->update($user);
         $this->flashMessageContainer->add('Your User was updated.');
         $this->redirect('list');
@@ -225,7 +263,8 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
      * @param \TYPO3\T3registration\Domain\Model\User $user
      * @return void
      */
-    public function deleteAction(\TYPO3\T3registration\Domain\Model\User $user) {
+    public function deleteAction(\TYPO3\T3registration\Domain\Model\User $user)
+    {
         $this->userRepository->remove($user);
         $this->flashMessageContainer->add('Your User was removed.');
         $this->redirect('list');

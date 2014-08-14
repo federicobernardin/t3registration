@@ -1,3 +1,9 @@
+
+<div xmlns="http://www.w3.org/1999/xhtml" lang="en"
+     xmlns:f="http://typo3.org/ns/fluid/ViewHelpers" >
+
+
+
 <label for="firstName">
 	fn<f:translate key="tx_t3registration_domain_model_user.firstName" /> <span class="required">(required)</span>
 </label><br />
@@ -6,10 +12,11 @@
    ln <f:translate key="tx_t3registration_domain_model_user.lastName" /> <span class="required">(required)</span>
 </label><br />
 <f:form.textfield property="lastName" /><br />
+<f:render partial="FormErrorLabel" arguments="{field:'user.username'}" />
 <label for="name">
    us <f:translate key="tx_t3registration_domain_model_user.username" /> <span class="required">(required)</span>
 </label><br />
-<f:form.textfield property="username" /><br />
+<f:form.textfield errorClass="pippo" property="username" /><br />
 <label for="name">
    pw <f:translate key="tx_t3registration_domain_model_user.password" /> <span class="required">(required)</span>
 </label><br />
