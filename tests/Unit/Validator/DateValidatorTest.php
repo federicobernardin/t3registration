@@ -22,7 +22,7 @@ class DateValidatorTest extends AbstractValidatorTestcase {
     public function OptionTypeIsNotDefined(){
         $result = $this->validator->validate('12/12/2019');
         $this->assertFalse($result);
-        $this->assertTrue(in_array(new \TYPO3\CMS\Extbase\Validation\Error('validator_date_notdefined', 3000000005), $this->validator->getErrors()));
+        $this->assertTrue(in_array(new \TYPO3\CMS\Extbase\Validation\Error('validator_type_notdefined', 3000000005), $this->validator->getErrors()));
     }
 
     /**
