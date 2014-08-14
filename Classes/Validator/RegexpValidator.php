@@ -19,18 +19,18 @@ class RegexpValidator extends AbstractValidator{
     public function validate($value) {
         if (!isset($this->options['regularExpression'])) {
             $this->addError(
-                    'validator.regexp.empty',
+                    'validator_regexp_empty',
                     3000000004);
         }
         $result = preg_match($this->options['regularExpression'], $value);
         if ($result === 0) {
             $this->addError(
-                'validator.regexp.nomatch',
+                'validator_regexp_nomatch',
                 3000000004);
         }
         if ($result === FALSE) {
             $this->addError(
-                'validator.regexp.error',
+                'validator_regexp_error',
                 3000000005);
         }
         return !$this->result->hasErrors();

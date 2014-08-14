@@ -19,12 +19,12 @@ class DateValidator extends AbstractValidator{
     public function validate($value){
         if (!isset($this->options['type'])) {
             $this->addError(
-                'validator.date.notdefined',
+                'validator_type_notdefined',
                 3000000005);
         }
         if (!isset($this->options['strftime'])) {
             $this->addError(
-                'validator.strftime.notdefined',
+                'validator_strftime_notdefined',
                 3000000006);
         }
         if (!isset($this->options['timezone'])) {
@@ -32,30 +32,31 @@ class DateValidator extends AbstractValidator{
         }
         if(($date = $this->getTimestampFromDate($value)) === false){
             $this->addError(
-                'validator.date.wrongformat',
+                'validator_date_wrongformat',
                 3000000007);
         }
         switch($this->options['type']){
             case 'future':
                 if($date <= $this->getTimestampFromDate(null)){
                     $this->addError(
-                        'validator.date.notinfuture',
+                        'validator_date_notinfuture',
                         3000000011);
                 }
                 break;
             case 'past':
                 if($date >= $this->getTimestampFromDate(null)){
                     $this->addError(
-                        'validator.date.notinpast',
+                        'validator_date_notinpast',
                         3000000012);
                 }
                 break;
             case 'range':
                 $this->testRange($date);
                 break;
+            //todo: forse manca il caso in cui non voglio controlli se non che la data sia una data
             default:
                 $this->addError(
-                    'validator.date.wrongtype',
+                    'validator_date_wrongtype',
                     3000000010);
         }
         return !$this->result->hasErrors();
@@ -66,12 +67,12 @@ class DateValidator extends AbstractValidator{
         $before = (!isset($this->options['before'])) ? false : $this->getTimestampFromDate($this->options['before']);
         if($after === false && $before === false){
             $this->addError(
-                'validator.range.invalid',
+                'validator_range_invalid',
                 3000000008);
         }
         if(($before !== false && $date > $before) || ($after !== false && $date < $after)){
             $this->addError(
-                'validator.range.outofrange',
+                'validator_range_outofrange',
                 3000000009);
         }
     }

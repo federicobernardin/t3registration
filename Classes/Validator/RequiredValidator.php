@@ -19,7 +19,7 @@ class RequiredValidator extends AbstractValidator{
     public function validate($value) {
         if(strlen($value) == 0){
             $this->addError(
-                'validator.required.notvalid',
+                'validator_required_notvalid',
                 3000000003);
         }
         return !$this->result->hasErrors();

@@ -36,7 +36,7 @@ class UniqueInPidValidator extends AbstractValidator{
         $count = $this->userRepository->countUniqueByField($field,$value,$pid);
         if($count>0){
             $this->addError(
-                'validator.unique.notvalid',
+                'validator_unique_notvalid',
                 3000000013);
         }
         return !$this->result->hasErrors();

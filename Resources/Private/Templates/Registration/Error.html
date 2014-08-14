@@ -15,8 +15,8 @@ Otherwise your changes will be overwritten the next time you save the extension 
     <div id="ext-t3registration-report">
         <f:if condition="{messages.errors->f:count()} > 0">
             <f:then>
-                <div class="error-header"><f:translate key="tx_t3registration_report_critical_error.header" >Critical Errors</f:translate></div>
-                <p class="error-subheader"><f:translate key="tx_t3registration_report_critical_error.subheader" >Some errors were found during elaborating process:</f:translate></p>
+                <div class="error-header"><f:translate key="tx_t3registration_report_critical_error_header" >Critical Errors</f:translate></div>
+                <p class="error-subheader"><f:translate key="tx_t3registration_report_critical_error_subheader" >Some errors were found during elaborating process:</f:translate></p>
                 <f:for each="{messages.errors}" as="message">
                     <div class="typo3-message message-error">
                         <div class="header-container">

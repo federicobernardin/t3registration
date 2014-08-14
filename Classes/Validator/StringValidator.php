@@ -18,7 +18,7 @@ class StringValidator extends AbstractValidator{
      */
     public function validate($value) {
         if (!is_string($value)) {
-            $this->addError('validator.istring.notvalid',
+            $this->addError('validator_istring_notvalid',
                 3000000001);
         }
         return !$this->result->hasErrors();

@@ -7,73 +7,109 @@
 			<trans-unit id="tx_t3registration_domain_model_user">
 				<source>User</source>
 			</trans-unit>
-			<trans-unit id="tx_t3registration_domain_model_user.name">
+			<trans-unit id="tx_t3registration_domain_model_user_name">
 				<source>Name</source>
 			</trans-unit>
-			<trans-unit id="tx_t3registration_domain_model_user.firstName">
+			<trans-unit id="tx_t3registration_domain_model_user_firstName">
 				<source>FirstName</source>
 			</trans-unit>
-			<trans-unit id="tx_t3registration_domain_model_user.lastName">
+			<trans-unit id="tx_t3registration_domain_model_user_lastName">
 				<source>Lastname</source>
 			</trans-unit>
-			<trans-unit id="tx_t3registration_domain_model_user.username">
+			<trans-unit id="tx_t3registration_domain_model_user_username">
 				<source>Username</source>
 			</trans-unit>
-			<trans-unit id="tx_t3registration_domain_model_user.password">
+			<trans-unit id="tx_t3registration_domain_model_user_password">
 				<source>Password</source>
 			</trans-unit>
-			<trans-unit id="tx_t3registration_domain_model_user.telephone">
+			<trans-unit id="tx_t3registration_domain_model_user_telephone">
 				<source>Telephone</source>
 			</trans-unit>
-			<trans-unit id="tx_t3registration_domain_model_user.address">
+			<trans-unit id="tx_t3registration_domain_model_user_address">
 				<source>Address</source>
 			</trans-unit>
-			<trans-unit id="tx_t3registration_domain_model_user.city">
+			<trans-unit id="tx_t3registration_domain_model_user_city">
 				<source>City</source>
+			</trans-unit>
+			<trans-unit id="tx_t3registration_domain_model_user_zip">
+				<source>ZIP Code</source>
 			</trans-unit>
 
             <!--ERROR TRANSLATION -->
 
-            <trans-unit id="tx_t3registration_report_critical_error.header">
+            <trans-unit id="tx_t3registration_report_critical_error_header">
                 <source>Critical Errors</source>
             </trans-unit>
-            <trans-unit id="tx_t3registration_report_critical_error.subheader">
+            <trans-unit id="tx_t3registration_report_critical_error_subheader">
                 <source>Some errors were found during elaborating process:</source>
             </trans-unit>
-            <trans-unit id="tx_t3registration_report_critical_error_20001.codeTitle">
+            <trans-unit id="tx_t3registration_report_critical_error_20001_codeTitle">
                 <source>Duplicate Field</source>
             </trans-unit>
-            <trans-unit id="tx_t3registration_report_critical_error_20001.codeMessage">
+            <trans-unit id="tx_t3registration_report_critical_error_20001_codeMessage">
                 <source>The %s field are duplicated in flexform, you must fix it.</source>
             </trans-unit>
-            <trans-unit id="tx_t3registration_report_critical_error_20001.codeField">
+            <trans-unit id="tx_t3registration_report_critical_error_20001_codeField">
                 <source>%s</source>
             </trans-unit>
-            <trans-unit id="tx_t3registration_report_critical_error_20002.codeTitle">
+            <trans-unit id="tx_t3registration_report_critical_error_20002_codeTitle">
                 <source>There are more than one username field</source>
             </trans-unit>
-            <trans-unit id="tx_t3registration_report_critical_error_20002.codeMessage">
+            <trans-unit id="tx_t3registration_report_critical_error_20002_codeMessage">
                 <source>This fields %s are set as username but only one can be username field, you must fix it.</source>
             </trans-unit>
-            <trans-unit id="tx_t3registration_report_critical_error_20002.codeField">
+            <trans-unit id="tx_t3registration_report_critical_error_20002_codeField">
                 <source>%s</source>
             </trans-unit>
-            <trans-unit id="tx_t3registration_domain_model_user.name">
-                <source>name</source>
-            </trans-unit>
-            <trans-unit id="tx_t3registration_domain_model_user.name">
-                <source>name</source>
-            </trans-unit>
-            <trans-unit id="tx_t3registration_domain_model_user.name">
-                <source>name</source>
+            
+
+            <!--VALIDATOR ERROR TRANSLATION -->
+
+            <trans-unit id="error_validator_required_notvalid">
+                <source>Field is required.</source>
             </trans-unit>
 
-
-            <trans-unit id="error_validator.required.notvalid">
-                <source>Field is required</source>
+            <trans-unit id="error_validator_unique_notvalid">
+                <source>This field is not unique.</source>
             </trans-unit>
-            <trans-unit id="error_validator.unique.notvalid">
-                <source>This field is not unique</source>
+
+            <trans-unit id="error_validator_range_invalid">
+                <source>Range specified is invalid.</source>
+            </trans-unit>
+            <trans-unit id="error_validator_range_outofrange">
+                <source>Date is not correct: out of range.</source>
+            </trans-unit>
+            <trans-unit id="error_validator_date_wrongtype">
+                <source>Date Type configured is invalid. Possible values are: future, past, range.</source>
+            </trans-unit>
+            <trans-unit id="error_validator_date_notinpast">
+                <source>Date should be in past but it is in future</source>
+            </trans-unit>
+            <trans-unit id="error_validator_date_notinfuture">
+                <source>Date should be in future but it is in past</source>
+            </trans-unit>
+            <trans-unit id="error_validator_date_wrongformat">
+                <source>Date is in wrong format.</source>
+            </trans-unit>
+            <trans-unit id="error_validator_strftime_notdefined">
+                <source>Date format is not defined.</source>
+            </trans-unit>
+            <trans-unit id="error_validator_type_notdefined">
+                <source>Date Type is not defined.</source>
+            </trans-unit>
+
+            <trans-unit id="error_validator_integer_notvalid">
+                <source>This field is not a number.</source>
+            </trans-unit>
+
+            <trans-unit id="error_validator_regexp_empty'">
+                <source>Regular expression is missed.</source>
+            </trans-unit>
+            <trans-unit id="error_validator_regexp_nomatch">
+                <source>The field is wrong.</source>
+            </trans-unit>
+            <trans-unit id="error_validator_regexp_error">
+                <source>Regular expression is not correct (remember to use / at the beginning and / at the end.</source>
             </trans-unit>
 
 		</body>
