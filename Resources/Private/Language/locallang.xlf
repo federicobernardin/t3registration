@@ -72,6 +72,9 @@
             <trans-unit id="error_validator.required.notvalid">
                 <source>Field is required</source>
             </trans-unit>
+            <trans-unit id="error_validator.unique.notvalid">
+                <source>This field is not unique</source>
+            </trans-unit>
 
 		</body>
 	</file>
