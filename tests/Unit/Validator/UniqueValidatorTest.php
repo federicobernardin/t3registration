@@ -3,6 +3,9 @@
 
 namespace TYPO3\T3registration\Tests\Unit\Validator;
 
+//@todo rimuovere e risolvere il problema del perchè non include il repository
+require_once(__DIR__ . '/../../../Classes/Domain/Repository/UserRepository.php');
+
 
 class UniqueValidatorTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
@@ -20,9 +23,7 @@ class UniqueValidatorTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
     public function setUp() {
         parent::setUp();
         $this->fixture = $this->getAccessibleMock('TYPO3\\T3registration\\Validator\\UniqueValidator',array('dummy'));
-
         $this->userRepository = $this->getAccessibleMock('TYPO3\\T3Registration\\Domain\\Repository\\UserRepository',array('countUniqueByField'),array(),'',false);
-
 
     }
 
