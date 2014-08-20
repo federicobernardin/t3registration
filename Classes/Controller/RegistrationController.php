@@ -89,6 +89,12 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
         $this->view->assign('user', $user);
     }
 
+    /**
+     * Use this parent function to inject Report System for generic configuration errors
+     * It is called before setting view, in case of error switching to error view
+     *
+     * @param ViewInterface $view
+     */
     protected function setViewConfiguration(ViewInterface $view)
     {
         parent::setViewConfiguration($view);
@@ -100,12 +106,20 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
         }
     }
 
+    /**
+     * This class method set settings value to specific class properties
+     */
     public function SetSettingsToClass(){
         if(isset($this->settings['backButtonName'])){
             $this->backButtonName = $this->settings['backButtonName'];
         }
     }
 
+    /**
+     * Overload of parent method to intercept generic misconfiguration messages
+     *
+     * @see setViewConfiguration
+     */
     public function callActionMethod()
     {
         if (!$this->report->hasError()) {
@@ -121,19 +135,72 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
         }
     }
 
+    /**
+     * This function validates fields and saves result in Result object
+     *
+     * @param array $parameters the user object properties passed to controller
+     * @return Result
+     */
     private function validateFields($parameters)
     {
         $results = new \TYPO3\CMS\Extbase\Error\Result();
+        //extract the list of validating fields from flexform, so external will not be validated
         $fields = $this->prepareFlexformFields();
         foreach ($fields as $field) {
             if ($this->validatorManager->validate($parameters[$field['name']], $field) === true) {
                 continue;
             }
+            //overwrite every cycle the Result object
             $results->forProperty('user')->forProperty($field['name'])->merge($this->validatorManager->getResult());
         }
         return $results;
     }
 
+    /**
+     * This function validates argument and if some errors raise forward to previous action
+     */
+    private function validateArguments()
+    {
+        //get Arguments from request
+        $arguments = $this->request->getArguments();
+        //saves in argumentsResult the Result object from validating process (!! the posted user object must be called
+        //user
+        $this->argumentsResult = $this->validateFields($arguments['user']);
+        if (count($this->argumentsResult->getSubResults())) {
+            $methodTagsValues = $this->reflectionService->getMethodTagsValues(get_class($this), $this->actionMethodName);
+            $ignoreValidationAnnotations = array();
+            //if set annotation for method ignore validation don't execute forwarding procedure
+            //this is similar to ignorevalidation
+            if (isset($methodTagsValues['t3registrationIgnoreValidation'])) {
+                return;
+            }
+            if (isset($methodTagsValues['ignorevalidation'])) {
+                $ignoreValidationAnnotations = $methodTagsValues['ignorevalidation'];
+            }
+            // if there exists more errors than in ignoreValidationAnnotations_=> call error method
+            // else => call action method
+            $shouldCallActionMethod = TRUE;
+            foreach ($this->argumentsResult->getSubResults() as $argumentName => $subValidationResult) {
+                if (!$subValidationResult->hasErrors()) {
+                    continue;
+                }
+                // setting @ignorevalidation $myvariable, myvariable will be not validated
+                if (array_search('$' . $argumentName, $ignoreValidationAnnotations) !== FALSE) {
+                    continue;
+                }
+                $shouldCallActionMethod = FALSE;
+            }
+            if (!$shouldCallActionMethod) {
+                $this->forwardToPreviousAction();
+            }
+        }
+    }
+
+    /**
+     * Extracts the list of fields from flexform
+     *
+     * @return array the extracted list of fields
+     */
     private function prepareFlexformFields()
     {
         $fields = array();
@@ -170,41 +237,6 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
         }
         else{
             throw new \Exception('Referring request not found');
-        }
-    }
-
-    /**
-     * This function validates argument and if some errors raise forward to previous action
-     */
-    private function validateArguments()
-    {
-        $arguments = $this->request->getArguments();
-        $this->argumentsResult = $this->validateFields($arguments['user']);
-        if (count($this->argumentsResult->getSubResults())) {
-            $methodTagsValues = $this->reflectionService->getMethodTagsValues(get_class($this), $this->actionMethodName);
-            $ignoreValidationAnnotations = array();
-            //if set annotation for method ignore validation don't execute forwarding procedure
-            if (isset($methodTagsValues['t3registrationIgnoreValidation'])) {
-                return;
-            }
-            if (isset($methodTagsValues['ignorevalidation'])) {
-                $ignoreValidationAnnotations = $methodTagsValues['ignorevalidation'];
-            }
-            // if there exists more errors than in ignoreValidationAnnotations_=> call error method
-            // else => call action method
-            $shouldCallActionMethod = TRUE;
-            foreach ($this->argumentsResult->getSubResults() as $argumentName => $subValidationResult) {
-                if (!$subValidationResult->hasErrors()) {
-                    continue;
-                }
-                if (array_search('$' . $argumentName, $ignoreValidationAnnotations) !== FALSE) {
-                    continue;
-                }
-                $shouldCallActionMethod = FALSE;
-            }
-            if (!$shouldCallActionMethod) {
-                $this->forwardToPreviousAction();
-            }
         }
     }
 
