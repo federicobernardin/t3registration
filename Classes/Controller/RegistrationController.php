@@ -73,6 +73,11 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
     protected $backButtonName = 'Back';
 
     /**
+     * @var array the list of fields elaborated from flexform and reflection
+     */
+    protected $fields;
+
+    /**
      * action new
      *
      * @param \TYPO3\T3registration\Domain\Model\User $user
@@ -145,8 +150,11 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
     {
         $results = new \TYPO3\CMS\Extbase\Error\Result();
         //extract the list of validating fields from flexform, so external will not be validated
-        $fields = $this->prepareFlexformFields();
-        foreach ($fields as $field) {
+        $this->fields = $this->prepareFlexformFields();
+        foreach ($this->fields as $field) {
+            if($field['ignoreValidationFromClass']){
+                continue;
+            }
             if ($this->validatorManager->validate($parameters[$field['name']], $field) === true) {
                 continue;
             }
@@ -188,6 +196,7 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
                 if (array_search('$' . $argumentName, $ignoreValidationAnnotations) !== FALSE) {
                     continue;
                 }
+
                 $shouldCallActionMethod = FALSE;
             }
             if (!$shouldCallActionMethod) {
@@ -206,10 +215,40 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
         $fields = array();
         if (isset($this->settings['fields']) && is_array($this->settings['fields'])) {
             foreach ($this->settings['fields'] as $field) {
+                $field['databaseField']['validators'] = $this->mergeValidatorsFromReflection($field);
+                $field['databaseField']['ignoreValidationFromClass'] = $this->addIgnoreValidationFromReflection($field);
                 $fields[] = $field['databaseField'];
             }
         }
         return $fields;
+    }
+
+    protected function addIgnoreValidationFromReflection($field){
+        $additionalValidatorsFromTag = $this->reflectionService->getPropertyTagValues('\TYPO3\T3registration\Domain\Model\User',$field['databaseField']['name'],'ignorevalidation');
+        if(count($additionalValidatorsFromTag)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Adds validators from reflectiontag to those in the flexform
+     *
+     * @param array $field  $this->settings['fields'] from Flexform
+     * @return string
+     */
+    protected function mergeValidatorsFromReflection($field){
+        $validators = $field['databaseField']['validators'];
+        $additionalValidatorsFromTag = $this->reflectionService->getPropertyTagValues('\TYPO3\T3registration\Domain\Model\User',$field['databaseField']['name'],'additionalValidators');
+        if(count($additionalValidatorsFromTag)){
+            $additionalValidatorsFromTag = explode(',',$additionalValidatorsFromTag[0]);
+            $validatorsFromFlexform = explode(',',$field['databaseField']['validators']);
+            $validators = array_merge($validatorsFromFlexform,$additionalValidatorsFromTag);
+            $validators = implode(',',$validators);
+        }
+        return $validators;
     }
 
     /**
