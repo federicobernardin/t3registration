@@ -99,6 +99,13 @@ class CacheBuilder {
                 }
             }
         }
+        $extensionInfoFile = PATH_site . 'typo3conf/t3registration_extension.php';
+        if (file_exists($extensionInfoFile)) {
+            $newFieldsList = include($extensionInfoFile);
+            if(is_array($newFieldsList) && count($newFieldsList)){
+                $this->classProperties = array_merge($this->classProperties,$newFieldsList);
+            }
+        }
         return $this->classProperties;
     }
 
@@ -128,11 +135,34 @@ class CacheBuilder {
         $gets = array();
         $sets = array();
         foreach ($columns as $name => $type) {
+            $ignoreValidation = false;
             $name = $this->to_camel_case($name);
+            if (is_array($type)){
+                $propertiesArray = $type;
+                $type = 'string';
+                foreach($propertiesArray as $property => $value){
+                    switch($property){
+                        case 'ignorevalidation':
+                            $ignoreValidation = true;
+                            break;
+                        case 'additionalValidators':
+                            $additionalValidators = '';
+                            if(is_array($value)){
+                                $additionalValidators = implode(',',$value);
+                            }
+                            break;
+                        case 'type':
+                            $type = $value;
+                            break;
+                    }
+                }
+            }
             if (!in_array($name, $this->usersClassExcludeProperties)) {
                 $gets[] = 'public function get' . ucfirst($name) . '(){ return $this->' . $name . ';}';
                 $sets[] = 'public function set' . ucfirst($name) . '($' . $name . '){ $this->' . $name . ' = $' . $name . '; return $this;}';
-                $variables[] = "/** @var " . $type . " */\nprotected $" . $name . ';';
+                $ignoreValidationTag = ($ignoreValidation) ? "\n* @ignorevalidation $" . $name:'';
+                $additionalValidators = ($additionalValidators) ? "\n* @additionalValidators " . $additionalValidators:'';
+                $variables[] = "/** @var " . $type . $ignoreValidationTag . $additionalValidators . "\n*/\nprotected $" . $name . ';';
             }
 
         }
