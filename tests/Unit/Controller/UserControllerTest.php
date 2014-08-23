@@ -54,7 +54,7 @@ class UserControllerTest extends \TYPO3\CMS\Extbase\Tests\Unit\BaseTestCase {
 	 * @test
 	 */
 	public function dummyMethod() {
-		$this->markTestIncomplete();
+		//$this->markTestIncomplete();
 	}
 
 }

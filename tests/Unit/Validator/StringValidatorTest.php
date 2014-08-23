@@ -12,6 +12,15 @@ class StringValidatorTest extends AbstractValidatorTestcase {
     /**
      * @test
      */
+    public function callTwiceButErrorShouldBeOne(){
+        $this->assertFalse($this->validator->validate(23));
+        $this->assertFalse($this->validator->validate(23));
+        $this->assertCount(1,$this->validator->getErrors());
+    }
+
+    /**
+     * @test
+     */
     public function isStringCorrect(){
         $this->assertTrue($this->validator->validate('This is a string 222'));
     }

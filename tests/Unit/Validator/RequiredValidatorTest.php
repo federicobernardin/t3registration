@@ -9,18 +9,28 @@ class RequiredValidatorTest extends AbstractValidatorTestcase {
 
     protected $validatorClassName = 'TYPO3\\T3registration\\Validator\\RequiredValidator';
 
+    /**
+     * @test
+     */
+    public function callTwiceButErrorShouldBeOne(){
+        $this->validator->validate('');
+        $this->validator->validate('');
+        $this->assertCount(1,$this->validator->getErrors());
+    }
+
+
 
     /**
      * @test
      */
-    public function isNumberCorrect(){
+    public function valueIsValid(){
         $this->assertTrue($this->validator->validate('value'));
     }
 
     /**
      * @test
      */
-    public function isNumberWrong(){
+    public function valueIsWrong(){
         $this->assertFalse($this->validator->validate(''));
 
     }

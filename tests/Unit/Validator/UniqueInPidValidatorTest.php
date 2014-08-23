@@ -26,6 +26,17 @@ class UniqueInPidValidatorTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
     }
 
+    /**
+     * @test
+     */
+    public function callTwiceButErrorShouldBeOne(){
+        $this->fixture->_set('userRepository',$this->userRepository);
+        $this->userRepository->expects($this->exactly(2))->method('countUniqueByField')->will($this->returnValue(1));
+        $this->fixture->validate('value');
+        $this->fixture->validate('value');
+        $this->assertCount(1,$this->fixture->getErrors());
+    }
+
 
     /**
      * @test

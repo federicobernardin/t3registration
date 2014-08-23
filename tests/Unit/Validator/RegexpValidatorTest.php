@@ -13,6 +13,16 @@ class RegexpValidatorTest extends AbstractValidatorTestcase {
     /**
      * @test
      */
+    public function callTwiceButErrorShouldBeOne(){
+        $this->validatorOptions(array('regularExpression' => '/^simple[0-9]expression$/'));
+        $this->assertFalse($this->validator->validate('some subject that will not match'));
+        $this->assertFalse($this->validator->validate('some subject that will not match'));
+        $this->assertCount(1,$this->validator->getErrors());
+    }
+
+    /**
+     * @test
+     */
     public function regularExpressionValidatorMatchesABasicExpressionCorrectly(){
         $this->validatorOptions(array('regularExpression' => '/^simple[0-9]expression$/'));
         $this->assertTrue($this->validator->validate('simple1expression'));

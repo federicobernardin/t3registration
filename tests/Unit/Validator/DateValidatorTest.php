@@ -19,6 +19,16 @@ class DateValidatorTest extends AbstractValidatorTestcase {
     /**
      * @test
      */
+    public function callTwiceButErrorShouldBeOne(){
+        $this->validatorOptions(array('type' => 'future','strftime' => 'd/m/Y'));
+        $result = $this->validator->validate('1/3/1900');
+        $result = $this->validator->validate('1/3/1900');
+        $this->assertCount(1,$this->validator->getErrors());
+    }
+
+    /**
+     * @test
+     */
     public function OptionTypeIsNotDefined(){
         $result = $this->validator->validate('12/12/2019');
         $this->assertFalse($result);
