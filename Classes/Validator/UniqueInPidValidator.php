@@ -30,6 +30,7 @@ class UniqueInPidValidator extends AbstractValidator{
      * {@inheritdoc }
      */
     public function validate($value) {
+        $this->resetValidatorResult();
         $this->getUserRepository();
         $field = (isset($this->options['usernameField']))?$this->options['usernameField']:'username';
         $pid = (isset($this->options['pid']))?$this->options['pid']:$GLOBALS['TSFE']->id;

@@ -53,6 +53,7 @@ class IntegerValidator extends AbstractValidator{
      * {@inheritdoc }
      */
     public function validate($value) {
+        $this->resetValidatorResult();
         if(!MathUtility::canBeInterpretedAsInteger($value)){
             $this->addError(
                 'validator_integer_notvalid',

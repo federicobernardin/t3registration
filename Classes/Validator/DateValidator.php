@@ -17,6 +17,7 @@ class DateValidator extends AbstractValidator{
      * {@inheritdoc }
      */
     public function validate($value){
+        $this->resetValidatorResult();
         if (!isset($this->options['type'])) {
             $this->addError(
                 'validator_type_notdefined',

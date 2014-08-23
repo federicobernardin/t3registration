@@ -17,6 +17,7 @@ class RequiredValidator extends AbstractValidator{
      * {@inheritdoc }
      */
     public function validate($value) {
+        $this->resetValidatorResult();
         if(strlen($value) == 0){
             $this->addError(
                 'validator_required_notvalid',

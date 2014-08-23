@@ -17,6 +17,7 @@ class StringValidator extends AbstractValidator{
      * {@inheritdoc }
      */
     public function validate($value) {
+        $this->resetValidatorResult();
         if (!is_string($value)) {
             $this->addError('validator_istring_notvalid',
                 3000000001);

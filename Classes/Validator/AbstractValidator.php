@@ -24,6 +24,10 @@ class AbstractValidator implements ValidatorInterface {
      */
     public function __construct($validationOptions = array()) {
         $this->setOptions($validationOptions);
+        $this->resetValidatorResult();
+    }
+
+    protected function resetValidatorResult(){
         $this->result = new \TYPO3\CMS\Extbase\Error\Result();
     }
 

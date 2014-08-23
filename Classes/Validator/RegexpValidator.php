@@ -17,6 +17,7 @@ class RegexpValidator extends AbstractValidator{
      * {@inheritdoc }
      */
     public function validate($value) {
+        $this->resetValidatorResult();
         if (!isset($this->options['regularExpression'])) {
             $this->addError(
                     'validator_regexp_empty',

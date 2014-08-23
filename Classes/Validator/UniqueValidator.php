@@ -29,6 +29,7 @@ class UniqueValidator extends AbstractValidator {
      * {@inheritdoc }
      */
     public function validate($value) {
+        $this->resetValidatorResult();
         $this->getUserRepository();
         $field = (isset($this->options['usernameField'])) ? $this->options['usernameField'] : 'username';
         $count = $this->userRepository->countUniqueByField($field, $value);
