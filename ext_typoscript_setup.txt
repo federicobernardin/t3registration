@@ -11,3 +11,10 @@ config.tx_extbase{
     	}
     }
 }
+
+plugin.tx_t3registration_pi1.settings{
+    edit{
+        //set check if user is logged
+        enableUserLoggedSecurity = 1
+    }
+}
