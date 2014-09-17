@@ -7,12 +7,12 @@ if (!defined('TYPO3_MODE')) {
 	'TYPO3.' . $_EXTKEY,
 	'Pi1',
 	array(
-		'Registration' => 'new, update, preview, delete, create, edit',
+		'Registration' => 'new, update, preview, delete, create, edit,accessDenied',
 
 	),
 	// non-cacheable actions
 	array(
-		'Registration' => 'new, update, preview, delete, create, edit',
+		'Registration' => 'new, update, preview, delete, create, edit,accessDenied',
 
 	)
 );
@@ -29,6 +29,9 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clea
 \TYPO3\T3registration\Utility\ValidatorUtility::addValidator('TYPO3\\T3registration\\Validator\\RegexpValidator');
 \TYPO3\T3registration\Utility\ValidatorUtility::addValidator('TYPO3\\T3registration\\Validator\\UniqueValidator');
 \TYPO3\T3registration\Utility\ValidatorUtility::addValidator('TYPO3\\T3registration\\Validator\\UniqueInPidValidator');
+
+
+\TYPO3\T3registration\Utility\DeciderUtility::addDecider('TYPO3\\T3registration\\Decider\\UpdaterDecider\\DummyUpdaterDecider');
 
 //require_once(PATH_site . 'typo3temp/Cache/Code/cache_phpcode/user.php');
 ?>
