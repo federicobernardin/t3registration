@@ -1,6 +1,8 @@
 <?php
 namespace TYPO3\T3registration\Controller;
 
+use \TYPO3\T3registration\Decider\UpdaterDeciderInterface;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -151,10 +153,14 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
         $results = new \TYPO3\CMS\Extbase\Error\Result();
         //extract the list of validating fields from flexform, so external will not be validated
         $this->fields = $this->prepareFlexformFields();
+        //todo: messo per non generare errore nel caso di edit, trovare una soluzione migliore
+        if(!is_array($parameters)) $parameters = array();
         foreach ($this->fields as $field) {
             if($field['ignoreValidationFromClass']){
                 continue;
             }
+            //todo: messo per non generare errore nel caso di edit, trovare una soluzione migliore
+            if(!isset($parameters[$field['name']])) $parameters[$field['name']] = '';
             if ($this->validatorManager->validate($parameters[$field['name']], $field) === true) {
                 continue;
             }
@@ -298,10 +304,61 @@ class RegistrationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionCon
      *
      * @param \TYPO3\T3registration\Domain\Model\User $user
      * @return void
+     * @t3registrationIgnoreValidation
      */
     public function editAction(\TYPO3\T3registration\Domain\Model\User $user)
     {
-        $this->view->assign('user', $user);
+
+        if($this->checkIfUpdateIsAllow($user)){
+
+            $this->view->assign('user', $user);
+        }
+        else{
+            $this->redirect('accessDenied');
+        }
+    }
+
+    public function accessDeniedAction(){
+        $pippo=5;
+    }
+
+    protected function getPasswordValue($user){
+
+    }
+
+    /**
+     * This function check if logged user verification check is enabled and check if user passed
+     * is the same as logged one
+     *
+     * @param \TYPO3\T3registration\Domain\Model\User $user
+     * @return bool return true if edit mode is enable
+     */
+    protected function checkIfUpdateIsAllow($user){
+        $deciders = \TYPO3\T3registration\Utility\DeciderUtility::getDeciders('update');
+        $proceed = true;
+        foreach($deciders as $decider){
+            if($decider instanceof UpdaterDeciderInterface){
+               $proceed = $proceed && $decider->allow($user);
+               if($decider->isExcludable()){
+                   break;
+               }
+            }
+        }
+        if(!$proceed){
+            return false;
+        }
+        if($this->settings['edit']['enableUserLoggedSecurity']){
+            $loggedUser = $GLOBALS['TSFE']->fe_user->user;
+            if(isset($loggedUser['uid']) && $user->getUid() == $loggedUser['uid']){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        else{
+            return true;
+        }
     }
 
     /**
